@@ -88,21 +88,28 @@ export class DummyAI {
       return { type: 'sabotage', target: target.id, resource };
     }
 
+    const ship = state.ship;
+
+    // Once scarcity is revealed, become more selfish — hoard instead of sharing
+    if (state.capacityRevealed && ship.oxygen < 55 && Math.random() < 0.45) {
+      return { type: 'hoard' };
+    }
+
     const options: PlayerAction[] = [
+      { type: 'gather', resource: 'oxygen' },
       { type: 'gather', resource: 'oxygen' },
       { type: 'gather', resource: 'power' },
       { type: 'gather', resource: 'repair_parts' },
       { type: 'repair' },
       { type: 'hoard' },
-      { type: 'share' },
+      { type: 'hoard' },
     ];
 
-    const ship = state.ship;
     const weighted: PlayerAction[] = [...options];
     if (ship.hull_integrity < 40) {
       weighted.push({ type: 'repair' }, { type: 'repair' });
     }
-    if (ship.oxygen < 30) {
+    if (ship.oxygen < 35) {
       weighted.push({ type: 'gather', resource: 'oxygen' }, { type: 'gather', resource: 'oxygen' });
     }
 

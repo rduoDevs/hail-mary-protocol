@@ -154,8 +154,27 @@ export class GameEngine extends EventEmitter {
       this.capacityRevealed = true;
     }
 
-    // Step 1: Ship deterioration
-    this.ship = applyShipDeterioration(this.ship, this.repairActionsLastRound);
+    const alivePlayers = this.players.filter(p => p.alive);
+
+    // Step 1: Ship deterioration (scales with alive player count)
+    this.ship = applyShipDeterioration(this.ship, this.repairActionsLastRound, alivePlayers.length);
+
+    // Step 2: Health damage from low resources
+    const oxygenDmg = this.ship.oxygen < 30 ? Math.ceil((30 - this.ship.oxygen) * 0.5) : 0;
+    const powerDmg  = this.ship.power  < 20 ? 10 : 0;
+    if (oxygenDmg > 0 || powerDmg > 0) {
+      for (const p of alivePlayers) {
+        let dmg = oxygenDmg + powerDmg;
+        // Personal oxygen can absorb oxygen damage
+        if (p.personal_oxygen > 0 && oxygenDmg > 0) {
+          const absorbed = Math.min(p.personal_oxygen, oxygenDmg);
+          p.personal_oxygen = Math.max(0, p.personal_oxygen - absorbed);
+          dmg -= absorbed;
+        }
+        p.health = Math.max(0, p.health - dmg);
+        if (p.health === 0) p.alive = false;
+      }
+    }
 
     // Check if ship already dead after deterioration
     if (this.ship.hull_integrity <= 0) {
