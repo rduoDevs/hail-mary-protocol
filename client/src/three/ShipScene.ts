@@ -180,15 +180,13 @@ export class ShipScene {
   }
 
   private buildPlayerNodes() {
-    // Diamond positions: top, right, bottom, left
-    const positions = [
-      new THREE.Vector3(0, 2.5, 0),
-      new THREE.Vector3(2.2, 0.5, 0),
-      new THREE.Vector3(0, -1.5, 0),
-      new THREE.Vector3(-2.2, 0.5, 0),
-    ]
+    // Hexagon positions: 6 players evenly spaced on a circle
+    const positions = Array.from({ length: 6 }, (_, i) => {
+      const angle = (i * Math.PI * 2) / 6
+      return new THREE.Vector3(Math.cos(angle) * 3.5, 0.5, Math.sin(angle) * 3.5)
+    })
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 6; i++) {
       const geo = new THREE.SphereGeometry(0.28, 16, 16)
       const mat = new THREE.MeshStandardMaterial({
         color: 0x4fc3f7,
@@ -243,7 +241,7 @@ export class ShipScene {
     this.damageFlickers.forEach((fl) => (fl.visible = inDanger))
 
     // Player nodes
-    players.slice(0, 4).forEach((p, i) => {
+    players.slice(0, 6).forEach((p, i) => {
       const node = this.playerNodes[i]
       if (!node) return
       const mat = node.material as THREE.MeshStandardMaterial
@@ -268,7 +266,7 @@ export class ShipScene {
     })
 
     // Hide extra labels
-    for (let i = players.length; i < 4; i++) {
+    for (let i = players.length; i < 6; i++) {
       const label = this.playerLabels[i]
       if (label) label.style.display = 'none'
     }

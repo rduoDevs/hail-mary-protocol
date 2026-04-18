@@ -8,14 +8,16 @@ import {
   PlayerAction,
   ActionRecord,
   ShipState,
+  StoryAlert,
   Role,
   JoinPayload,
 } from './types';
 import { applyShipDeterioration } from './shipUpdate';
 import { resolveActions } from './actions';
 
-const ROLES: Role[] = ['Engineer', 'Medic', 'Navigator', 'Commander'];
-const MAX_PLAYERS = 4;
+const ROLES: Role[] = ['Engineer', 'Medic', 'Navigator', 'Commander', 'Scientist', 'Security'];
+const MAX_PLAYERS = 6;
+const TRUE_CAPACITY = 4;
 const TOTAL_ROUNDS = 6;
 const DISCUSSION_TIME = 30_000; // 30s
 const ACTION_TIME = 20_000;     // 20s
@@ -31,6 +33,8 @@ export class GameEngine extends EventEmitter {
   private repairActionsLastRound: number = 0;
   private roundTimer?: ReturnType<typeof setTimeout>;
   private started = false;
+  private capacityRevealed = false;
+  private currentStoryAlert?: StoryAlert;
 
   constructor() {
     super();
@@ -101,6 +105,9 @@ export class GameEngine extends EventEmitter {
       ship: { ...this.ship },
       players: this.players.map(toPublic),
       actionHistory: this.actionHistory,
+      capacityRevealed: this.capacityRevealed,
+      trueCapacity: this.capacityRevealed ? TRUE_CAPACITY : undefined,
+      storyAlert: this.currentStoryAlert,
     };
   }
 
@@ -126,9 +133,26 @@ export class GameEngine extends EventEmitter {
 
   // ── Round flow ──────────────────────────────────────────────────────────────
 
+  private getStoryAlert(round: number): StoryAlert | undefined {
+    const alerts: Record<number, StoryAlert> = {
+      1: { round: 1, type: 'info', title: 'SYSTEMS NOMINAL', body: 'Life support reserves calculated for full crew of 6. Estimated journey: 6 cycles. All personnel accounted for.' },
+      2: { round: 2, type: 'warning', title: 'RESOURCE ANOMALY DETECTED', body: 'Automated audit flagged inconsistency in life support calculations. Investigation underway. No immediate action required.' },
+      3: { round: 3, type: 'warning', title: 'AUDIT: CRITICAL DISCREPANCY', body: 'Pre-launch resource manifest does not match actual reserves. Recalculating survival thresholds. Results pending.' },
+      4: { round: 4, type: 'critical', title: 'LIFE SUPPORT MISCALCULATION CONFIRMED', body: 'Actual reserves support a maximum of 4 survivors through journey completion. Current crew: 6. Recommend immediate resource prioritization.' },
+      5: { round: 5, type: 'critical', title: 'SURVIVAL WINDOW CLOSING', body: 'At current consumption rates, life support will sustain at most 4 crew members to destination. Decisions must be made.' },
+      6: { round: 6, type: 'critical', title: 'FINAL CYCLE', body: 'This is the last cycle. Only those who secured sufficient resources will survive arrival.' },
+    };
+    return alerts[round];
+  }
+
   private beginRound() {
     this.round += 1;
     this.ship.round = this.round;
+
+    this.currentStoryAlert = this.getStoryAlert(this.round);
+    if (this.round >= 4 && !this.capacityRevealed) {
+      this.capacityRevealed = true;
+    }
 
     // Step 1: Ship deterioration
     this.ship = applyShipDeterioration(this.ship, this.repairActionsLastRound);
@@ -214,7 +238,10 @@ export class GameEngine extends EventEmitter {
       return;
     }
     if (this.round >= TOTAL_ROUNDS) {
-      this.endGame('win', `${alive.length} survivor(s) made it through all rounds!`);
+      const msg = this.capacityRevealed
+        ? `${alive.length} of 6 crew survived. True capacity was ${TRUE_CAPACITY}.`
+        : `${alive.length} survivor(s) made it through all rounds!`;
+      this.endGame('win', msg);
       return;
     }
 

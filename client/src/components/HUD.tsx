@@ -5,6 +5,7 @@ import ChatPanel from './ChatPanel'
 import ActionMenu from './ActionMenu'
 import PhaseTimer from './PhaseTimer'
 import GameOver from './GameOver'
+import StoryAlert from './StoryAlert'
 
 export default function HUD() {
   const gameState = useGameStore((s) => s.gameState)
@@ -67,6 +68,11 @@ export default function HUD() {
           </div>
         </div>
       </div>
+
+      {/* Story alert banner */}
+      {gameState?.storyAlert && (
+        <StoryAlert key={gameState.round} alert={gameState.storyAlert} />
+      )}
 
       {/* Side panels */}
       <ResourceBars />

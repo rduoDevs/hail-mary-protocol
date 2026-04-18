@@ -169,6 +169,7 @@ export default function App() {
   const setPhaseInfo = useGameStore((s) => s.setPhaseInfo)
   const addMessage = useGameStore((s) => s.addMessage)
   const setActionResults = useGameStore((s) => s.setActionResults)
+  const addWhisper = useGameStore((s) => s.addWhisper)
 
   useEffect(() => {
     // Socket event listeners
@@ -213,6 +214,10 @@ export default function App() {
       }
     })
 
+    socket.on('game:whisper', (whisper) => {
+      addWhisper(whisper)
+    })
+
     socket.on('game:over', (payload) => {
       // Merge outcome into current game state
       const current = useGameStore.getState().gameState
@@ -233,6 +238,7 @@ export default function App() {
       socket.off('game:message')
       socket.off('game:action_result')
       socket.off('game:over')
+      socket.off('game:whisper')
     }
   }, [])
 

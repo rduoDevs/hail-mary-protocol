@@ -11,10 +11,17 @@ export interface ShipState {
 export interface PlayerPublicState {
   id: string
   name: string
-  role: 'Engineer' | 'Medic' | 'Navigator' | 'Commander'
+  role: 'Engineer' | 'Medic' | 'Navigator' | 'Commander' | 'Scientist' | 'Security'
   type: 'human' | 'ai'
   health: number
   alive: boolean
+}
+
+export interface StoryAlert {
+  round: number
+  type: 'info' | 'warning' | 'critical'
+  title: string
+  body: string
 }
 
 export interface GameState {
@@ -24,6 +31,9 @@ export interface GameState {
   ship: ShipState
   players: PlayerPublicState[]
   actionHistory: any[]
+  capacityRevealed?: boolean
+  trueCapacity?: number
+  storyAlert?: StoryAlert
   outcome?: { result: 'win' | 'loss'; survivors: string[]; message: string }
 }
 
@@ -40,6 +50,14 @@ export interface ChatMessage {
   timestamp: number
 }
 
+export interface WhisperMessage {
+  fromPlayerId: string
+  fromPlayerName: string
+  toPlayerId: string
+  text: string
+  timestamp: number
+}
+
 export interface ActionResult {
   playerId: string
   action: string
@@ -47,24 +65,25 @@ export interface ActionResult {
 }
 
 interface GameStore {
-  // Connection
   connected: boolean
   joined: boolean
   localPlayerId: string | null
   localPlayerName: string | null
 
-  // Game data
   gameState: GameState | null
   phaseInfo: PhaseInfo | null
   messages: ChatMessage[]
+  whispers: WhisperMessage[]
   lastActionResults: ActionResult[]
+  activeWhisperTarget: string | null
 
-  // Actions
   setConnected: (v: boolean) => void
   setJoined: (id: string, name: string) => void
   setGameState: (s: GameState) => void
   setPhaseInfo: (p: PhaseInfo) => void
   addMessage: (m: ChatMessage) => void
+  addWhisper: (w: WhisperMessage) => void
+  setActiveWhisperTarget: (id: string | null) => void
   setActionResults: (r: ActionResult[]) => void
   reset: () => void
 }
@@ -77,23 +96,27 @@ export const useGameStore = create<GameStore>((set) => ({
   gameState: null,
   phaseInfo: null,
   messages: [],
+  whispers: [],
   lastActionResults: [],
+  activeWhisperTarget: null,
 
   setConnected: (v) => set({ connected: v }),
   setJoined: (id, name) => set({ joined: true, localPlayerId: id, localPlayerName: name }),
   setGameState: (s) => set({ gameState: s }),
   setPhaseInfo: (p) => set({ phaseInfo: p }),
-  addMessage: (m) =>
-    set((state) => ({ messages: [...state.messages.slice(-199), m] })),
+  addMessage: (m) => set((state) => ({ messages: [...state.messages.slice(-199), m] })),
+  addWhisper: (w) => set((state) => ({ whispers: [...state.whispers.slice(-99), w] })),
+  setActiveWhisperTarget: (id) => set({ activeWhisperTarget: id }),
   setActionResults: (r) => set({ lastActionResults: r }),
-  reset: () =>
-    set({
-      joined: false,
-      localPlayerId: null,
-      localPlayerName: null,
-      gameState: null,
-      phaseInfo: null,
-      messages: [],
-      lastActionResults: [],
-    }),
+  reset: () => set({
+    joined: false,
+    localPlayerId: null,
+    localPlayerName: null,
+    gameState: null,
+    phaseInfo: null,
+    messages: [],
+    whispers: [],
+    lastActionResults: [],
+    activeWhisperTarget: null,
+  }),
 }))

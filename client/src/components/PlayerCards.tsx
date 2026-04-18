@@ -3,6 +3,7 @@ import { useGameStore } from '../store/gameStore'
 export default function PlayerCards() {
   const players = useGameStore((s) => s.gameState?.players ?? [])
   const localId = useGameStore((s) => s.localPlayerId)
+  const setActiveWhisperTarget = useGameStore((s) => s.setActiveWhisperTarget)
 
   return (
     <div
@@ -14,8 +15,8 @@ export default function PlayerCards() {
         width: 170,
         display: 'flex',
         flexDirection: 'column',
-        gap: 8,
-        pointerEvents: 'none',
+        gap: 6,
+        pointerEvents: 'all',
       }}
     >
       {players.map((p) => {
@@ -25,6 +26,8 @@ export default function PlayerCards() {
           p.role === 'Engineer' ? '#ff6b35'
           : p.role === 'Medic' ? '#00e676'
           : p.role === 'Navigator' ? '#00bfff'
+          : p.role === 'Scientist' ? '#b39ddb'
+          : p.role === 'Security' ? '#ef9a9a'
           : '#ffd700'
 
         return (
@@ -47,7 +50,28 @@ export default function PlayerCards() {
                 {p.type === 'human' ? 'HUMAN' : 'AI'}
               </span>
             </div>
-            <div style={{ fontSize: 9, color: roleColor, marginBottom: 5 }}>{p.role.toUpperCase()}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+              <span style={{ fontSize: 9, color: roleColor }}>{p.role.toUpperCase()}</span>
+              {!isLocal && p.alive && (
+                <button
+                  onClick={() => setActiveWhisperTarget(p.id)}
+                  title={`Whisper to ${p.name}`}
+                  style={{
+                    fontSize: 8,
+                    padding: '1px 5px',
+                    background: 'rgba(206,147,216,0.1)',
+                    border: '1px solid rgba(206,147,216,0.4)',
+                    borderRadius: 3,
+                    color: '#ce93d8',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    letterSpacing: 1,
+                  }}
+                >
+                  [W]
+                </button>
+              )}
+            </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: '#888', marginBottom: 3 }}>
               <span>HP</span>
               <span style={{ color: '#e0e0e0' }}>{p.alive ? `${p.health}%` : 'DEAD'}</span>

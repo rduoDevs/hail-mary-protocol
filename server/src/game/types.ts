@@ -1,4 +1,4 @@
-export type Role = 'Engineer' | 'Medic' | 'Navigator' | 'Commander';
+export type Role = 'Engineer' | 'Medic' | 'Navigator' | 'Commander' | 'Scientist' | 'Security';
 export type PlayerType = 'human' | 'ai';
 export type GamePhase = 'lobby' | 'discussion' | 'action' | 'resolution' | 'over';
 export type ActionType = 'gather' | 'repair' | 'hoard' | 'share' | 'sabotage' | 'sacrifice';
@@ -53,6 +53,26 @@ export interface ActionRecord {
   results: ActionResult[];
 }
 
+export interface WhisperMessage {
+  fromPlayerId: string;
+  fromPlayerName: string;
+  toPlayerId: string;
+  text: string;
+  timestamp: number;
+}
+
+export interface WhisperPayload {
+  toPlayerId: string;
+  text: string;
+}
+
+export interface StoryAlert {
+  round: number;
+  type: 'info' | 'warning' | 'critical';
+  title: string;
+  body: string;
+}
+
 export interface GameState {
   gameId: string;
   round: number;
@@ -60,6 +80,9 @@ export interface GameState {
   ship: ShipState;
   players: PlayerPublicState[];
   actionHistory: ActionRecord[];
+  capacityRevealed: boolean;
+  trueCapacity?: number;
+  storyAlert?: StoryAlert;
   outcome?: {
     result: 'win' | 'loss';
     survivors: string[];

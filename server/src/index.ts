@@ -8,6 +8,8 @@ import {
   JoinPayload,
   ActionPayload,
   MessagePayload,
+  WhisperPayload,
+  WhisperMessage,
   PlayerState,
 } from './game/types';
 
@@ -39,17 +41,29 @@ function addAI(name: string) {
   const player = engine.addPlayer({ name, type: 'ai' });
   if (!player) return;
 
-  const ai = new DummyAI(engine, player, (playerId, playerName, text) => {
-    const msg = { playerId, playerName, text, timestamp: Date.now() };
-    io.emit('game:message', msg);
-  });
+  const ai = new DummyAI(
+    engine,
+    player,
+    (playerId, playerName, text) => {
+      const msg = { playerId, playerName, text, timestamp: Date.now() };
+      io.emit('game:message', msg);
+    },
+    (fromId, fromName, toId, text) => {
+      const whisper: WhisperMessage = { fromPlayerId: fromId, fromPlayerName: fromName, toPlayerId: toId, text, timestamp: Date.now() };
+      const fromPlayer = engine.getPlayer(fromId);
+      const toPlayer = engine.getPlayer(toId);
+      if (fromPlayer?.socketId) io.to(fromPlayer.socketId).emit('game:whisper', whisper);
+      if (toPlayer?.socketId) io.to(toPlayer.socketId).emit('game:whisper', whisper);
+      console.log(`[whisper] ${fromName} → ${toId}: ${text}`);
+    }
+  );
   aiAgents.set(player.id, ai);
 }
 
 // ── Helper: fill remaining slots with dummy AIs and start ───────────────────
 function fillWithAIsAndStart() {
   const needed = engine.maxPlayers - engine.playerCount;
-  const aiNames = ['ARIA-7', 'NEXUS-3', 'VEGA-9', 'ORION-2'];
+  const aiNames = ['ARIA-7', 'NEXUS-3', 'VEGA-9', 'ORION-2', 'HELIX-5'];
   for (let i = 0; i < needed; i++) {
     addAI(aiNames[i % aiNames.length]);
   }
@@ -176,6 +190,25 @@ io.on('connection', (socket: Socket) => {
     });
 
     console.log(`[action] ${player.name} → ${payload.type}`);
+  });
+
+  // ── game:whisper ───────────────────────────────────────────────────────────
+  socket.on('game:whisper', (payload: WhisperPayload) => {
+    const sender = engine.getPlayerBySocket(socket.id);
+    if (!sender) return;
+    const target = engine.getPlayer(payload.toPlayerId);
+    if (!target) return;
+
+    const whisper: WhisperMessage = {
+      fromPlayerId: sender.id,
+      fromPlayerName: sender.name,
+      toPlayerId: target.id,
+      text: payload.text,
+      timestamp: Date.now(),
+    };
+    socket.emit('game:whisper', whisper);
+    if (target.socketId) io.to(target.socketId).emit('game:whisper', whisper);
+    console.log(`[whisper] ${sender.name} → ${target.name}: ${payload.text}`);
   });
 
   // ── game:message ───────────────────────────────────────────────────────────
