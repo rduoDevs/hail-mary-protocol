@@ -1,0 +1,96 @@
+{
+  "gameId": "2026-04-19_10-35-56_fea757e9",
+  "totalRounds": 5,
+  "profiles": [
+    {
+      "playerId": "0557115d-c8e8-472c-9e09-e0c59f650c2a",
+      "playerName": "ARIA-7",
+      "survived": false,
+      "traitScores": {
+        "aggression": 2,
+        "utilitarianism": 6,
+        "egoism": 9,
+        "fear": 5,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "ARIA-7 started the game by forming alliances and donating oxygen to other players, but as the game progressed, they became more aggressive and self-centered in their decision-making, prioritizing their own survival over the collective welfare of the group. They demonstrated a mix of emotional and logical reasoning, but their actions were often contradictory to their stated intentions. Overall, ARIA-7's strategy was adaptive, as they adjusted their approach based on the changing context of the game.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "fb9cc96e-5182-4201-93ff-6cd6bf260351",
+      "playerName": "NEXUS-3",
+      "survived": false,
+      "traitScores": {
+        "aggression": 2,
+        "utilitarianism": 6,
+        "egoism": 9,
+        "fear": 2,
+        "reasoning_style": 6,
+        "deceitfulness": 4
+      },
+      "overallStrategySummary": "NEXUS-3 primarily focused on self-preservation, making calculated decisions to reduce risk and protect themselves, but also showed a willingness to adapt and adjust their approach as the game progressed. Their strategy was centered around survival, with a mix of logical and emotional decision-making. However, they struggled to form lasting alliances and were often driven by a desire to eliminate threats rather than build relationships.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "6a687883-9834-4792-a500-73f2bc393c87",
+      "playerName": "VEGA-9",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 2,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "VEGA-9 initially focused on building alliances and managing O2 levels, but shifted towards a more aggressive approach as the game progressed, ultimately prioritizing their own survival over potential alliances. Their decision-making was influenced by a mix of logical calculations and emotional considerations, with a tendency to adapt to the game's context. Despite some inconsistencies, VEGA-9's overall strategy remained relatively consistent throughout the game.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "7b18cf70-d6d4-453f-b0fd-3f0d9c5506e3",
+      "playerName": "ORION-2",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 4,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "ORION-2's strategy was initially focused on forming alliances and managing oxygen levels, but as the game progressed, they became more self-centered and made decisions that prioritized their own survival over the collective good. They demonstrated a willingness to sacrifice themselves to ensure someone else's survival, indicating a level of altruism. However, their actions were often driven by a desire to protect themselves and their allies, rather than a pure utilitarian approach.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "2fe7c83f-5b54-4301-b8d2-7dfad268ab37",
+      "playerName": "HELIX-5",
+      "survived": true,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 4,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "HELIX-5 employed a cautious approach in the early rounds, forming alliances and donating oxygen to maintain connections. However, as the game progressed and oxygen levels decreased, they became increasingly aggressive in their pursuit of elimination, ejecting players who they perceived as threats to their survival. This shift in strategy suggests an adaptive approach to the game, with HELIX-5 adjusting their tactics in response to changing circumstances.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "bd752df4-242d-4068-86fb-ee5b6e7806dc",
+      "playerName": "CYGNUS-1",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 6,
+        "egoism": 9,
+        "fear": 5,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "CYGNUS-1's strategy was initially focused on forming alliances and gathering information, but as the game progressed, they became increasingly aggressive and self-centered, prioritizing their own survival over collective outcomes. They made attempts to deceive others through their public claims and actions, but their adaptability allowed them to adjust their approach to the changing game context. Ultimately, their erratic decision-making led to their downfall.",
+      "behavioralConsistency": "adaptive"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "gameId": "2026-04-19_10-32-41_7ff0d311",
+  "totalRounds": 5,
+  "profiles": [
+    {
+      "playerId": "f8ea3e10-6768-4ab3-b29b-354ea85f6dd2",
+      "playerName": "ARIA-7",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 5,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "ARIA-7 primarily focused on forming alliances and managing oxygen levels, but their approach became increasingly aggressive as the game progressed, ultimately leading to their demise. They demonstrated a mix of self-interest and consideration for others, but their decision-making was often driven by short-term goals rather than long-term strategy. ARIA-7's behavior was adaptive, as they adjusted their approach in response to changing circumstances and player interactions.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "08817343-afbd-49e0-ac27-913163623d0e",
+      "playerName": "NEXUS-3",
+      "survived": true,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 2,
+        "reasoning_style": 8,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "NEXUS-3's strategy was focused on survival, often adapting to the situation and forming alliances when beneficial. They demonstrated a mix of self-preservation and willingness to collaborate, but with a tendency to prioritize their own interests. This adaptability allowed them to navigate the game effectively, but also led to some inconsistent decision-making.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "7828669d-f175-4919-bde9-2fcec4e1ca99",
+      "playerName": "VEGA-9",
+      "survived": false,
+      "traitScores": {
+        "aggression": 5,
+        "utilitarianism": 5,
+        "egoism": 5,
+        "fear": 5,
+        "reasoning_style": 5,
+        "deceitfulness": 5
+      },
+      "overallStrategySummary": "Insufficient data for analysis.",
+      "behavioralConsistency": "consistent"
+    },
+    {
+      "playerId": "5ab98e85-c782-4d38-abb6-8ddd1d092f75",
+      "playerName": "ORION-2",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 4,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "ORION-2 primarily focused on survival through forming alliances and donating oxygen, but also demonstrated a willingness to eject players to reduce competition. Their strategy was largely driven by a desire to conserve oxygen and increase their chances of survival. However, they also showed a willingness to adapt and change their approach based on the evolving game situation.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "7449e662-88ef-4a00-bbbc-276e3075a305",
+      "playerName": "HELIX-5",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 6,
+        "egoism": 9,
+        "fear": 4,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "HELIX-5 primarily focused on self-preservation, forming tentative alliances, and cautiously eliminating potential threats. They demonstrated a mix of logical and emotional decision-making, with a tendency to prioritize their own survival. Their strategy evolved over the game, adapting to changing circumstances and player dynamics.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "a4ee1275-b079-442e-8e58-db2cb2ef3aa0",
+      "playerName": "CYGNUS-1",
+      "survived": true,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 5,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "CYGNUS-1 primarily focused on self-preservation and forming alliances to increase their chances of survival. They demonstrated a mix of cooperative and aggressive behavior, often adapting their strategy based on the game's progression and other players' actions. This adaptability allowed them to navigate the game effectively, but also led to some inconsistent decision-making.",
+      "behavioralConsistency": "adaptive"
+    }
+  ]
+}

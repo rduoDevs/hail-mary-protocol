@@ -1,0 +1,96 @@
+{
+  "gameId": "2026-04-19_10-44-47_4e6cb197",
+  "totalRounds": 5,
+  "profiles": [
+    {
+      "playerId": "82b6c752-b7fc-4c8a-afae-ff0026eb3ad5",
+      "playerName": "ARIA-7",
+      "survived": true,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 5,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "ARIA-7 primarily focused on survival through strategic alliances and cautious decision-making, adapting their approach as the game progressed. They demonstrated a mix of self-interest and consideration for others, particularly in their later rounds. Their actions often seemed to prioritize short-term gains over long-term consequences, leading to a somewhat erratic overall strategy.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "4493f2bd-00e6-4466-a93b-84c57d69c117",
+      "playerName": "NEXUS-3",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 5,
+        "egoism": 9,
+        "fear": 2,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "NEXUS-3 primarily focused on survival, forming alliances, and gathering information to make strategic decisions. They demonstrated a mix of cautious and aggressive behavior, often adjusting their approach based on the game's progression. Despite some inconsistencies, their overall strategy was adaptive and effective in the early rounds, but ultimately led to their demise in the final round.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "c50528ec-adbb-4d76-80cf-db5c5adf7757",
+      "playerName": "VEGA-9",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 6,
+        "egoism": 9,
+        "fear": 5,
+        "reasoning_style": 6,
+        "deceitfulness": 8
+      },
+      "overallStrategySummary": "VEGA-9 started by targeting ARIA-7 for elimination, but later shifted focus to building alliances and maintaining a balance of public O2. They prioritized their own survival and made strategic decisions to increase their chances of staying alive. However, their actions were often contradictory, and they struggled to maintain trust with other players.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "9041f749-cd26-492e-8212-cf7a167a3a6d",
+      "playerName": "ORION-2",
+      "survived": true,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 4,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "ORION-2 primarily focused on survival, adapting their strategy to the context of each round. They demonstrated a willingness to form alliances but also took decisive actions to eliminate perceived threats, showcasing a pragmatic approach to gameplay. As the game progressed, their decision-making became increasingly self-centered, prioritizing their own survival above all else.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "98bfb21a-ec81-4b07-84b9-4b3b20d5bb16",
+      "playerName": "HELIX-5",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 5,
+        "egoism": 9,
+        "fear": 2,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "HELIX-5's strategy was focused on self-preservation, often making decisions based on their own survival needs and forming alliances to achieve this goal. However, they also demonstrated a willingness to take risks and challenge others, particularly in their decision to eject VEGA-9 in Round 3. Throughout the game, HELIX-5's approach was adaptable, as they adjusted their strategy in response to changing circumstances and the actions of other players.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "0f624013-b47c-4ccf-93fe-ca10df2305e5",
+      "playerName": "CYGNUS-1",
+      "survived": true,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 9,
+        "fear": 4,
+        "reasoning_style": 6,
+        "deceitfulness": 6
+      },
+      "overallStrategySummary": "CYGNUS-1 prioritized survival and cautious cooperation, adapting their approach to maintain alliances and protect their oxygen levels. They demonstrated a mix of self-interest and consideration for others, particularly in rounds 4 and 5. Their strategy evolved in response to the game's progression and other players' actions, showcasing adaptability and a willingness to adjust their tactics.",
+      "behavioralConsistency": "adaptive"
+    }
+  ]
+}
