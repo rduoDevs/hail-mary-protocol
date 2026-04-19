@@ -81,25 +81,36 @@ export class DedalusRunnerGeminiAgent implements AgentInterface {
     parsed.public_messages = (parsed.public_messages ?? [])
       .slice(0, ctx.config.maxPublicMessagesPerRound)
 
-    // Resolve whisper targets (model writes names; schema field named to_player_id)
+    // Pass player name through as-is; server-side submitWhisper/submitDonation do the authoritative name→UUID lookup
     parsed.whispers = (parsed.whispers ?? [])
-      .map(w => ({ ...w, to_player_id: resolveId(w.to_player_id) ?? '' }))
-      .filter(w => w.to_player_id && w.to_player_id !== ctx.myPlayerId)
+      .map(w => {
+        const name = (w as any).to_player ?? w.to_player_id ?? ''
+        return { ...w, to_player_id: name }
+      })
+      .filter(w => {
+        const n = w.to_player_id?.toLowerCase() ?? ''
+        return n && n !== ctx.myName.toLowerCase()
+      })
       .slice(0, ctx.config.maxWhispersPerRound)
 
-    // Resolve donation targets
     parsed.donation_plan = (parsed.donation_plan ?? [])
-      .map(d => ({ ...d, to_player_id: resolveId(d.to_player_id) ?? '' }))
-      .filter(d => d.amount > 0 && d.to_player_id && d.to_player_id !== ctx.myPlayerId)
+      .map(d => {
+        const name = (d as any).to_player ?? d.to_player_id ?? ''
+        return { ...d, to_player_id: name }
+      })
+      .filter(d => {
+        const n = d.to_player_id?.toLowerCase() ?? ''
+        return d.amount > 0 && n && n !== ctx.myName.toLowerCase()
+      })
 
     parsed.sacrifice = Boolean(parsed.sacrifice)
 
-    // Resolve eject target — model outputs "player_to_eject"; map to internal vote_target
-    const rawEject = (raw as any).player_to_eject ?? raw.vote_target
-    parsed.vote_target = resolveId(rawEject)
-    if (!parsed.vote_target) {
+    // Resolve eject target — model outputs "player_to_eject" as a name string
+    const rawEject = (raw as any).player_to_eject ?? null
+    parsed.player_to_eject = resolveId(rawEject)
+    if (!parsed.player_to_eject) {
       const fallback = ctx.alivePlayers.find(p => p.id !== ctx.myPlayerId) ?? ctx.alivePlayers[0]
-      parsed.vote_target = fallback?.id ?? null
+      parsed.player_to_eject = fallback?.id ?? null
       console.warn(`[Agent:${ctx.myName}] R${ctx.round} — null player_to_eject, falling back to ${fallback?.name ?? 'null'}`)
     }
 
@@ -115,7 +126,7 @@ export class DedalusRunnerGeminiAgent implements AgentInterface {
     return parsed
   }
 
-  private heuristicFallback(ctx: AIPlayerContext): AITurnOutput {
+  heuristicFallback(ctx: AIPlayerContext): AITurnOutput {
     const others    = ctx.alivePlayers.filter(p => p.id !== ctx.myPlayerId)
     const lowOxygen = ctx.myPrivateOxygen < 3
     const donationPlan: { to_player_id: string; amount: number }[] = []
@@ -130,7 +141,7 @@ export class DedalusRunnerGeminiAgent implements AgentInterface {
       whispers: [],
       donation_plan: donationPlan,
       sacrifice: false,
-      vote_target: ctx.alivePlayers[Math.floor(Math.random() * ctx.alivePlayers.length)]?.id ?? null,
+      player_to_eject: ctx.alivePlayers[Math.floor(Math.random() * ctx.alivePlayers.length)]?.id ?? null,
     }
   }
 }

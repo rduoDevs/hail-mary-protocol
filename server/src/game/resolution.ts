@@ -52,17 +52,25 @@ export function resolveRound(input: ResolutionInput): ResolutionResult {
     if (totalRequested > giver.privateOxygen) continue
 
     for (const entry of plan.entries) {
-      // Accept either UUID or player name (name resolution safety net)
-      const recipient = players.find(
-        p => p.alive && (p.id === entry.toPlayerId || p.name === entry.toPlayerId)
+      const rawTarget = (entry.toPlayerId ?? '').trim()
+      const lowerTarget = rawTarget.toLowerCase()
+      // Resolve by UUID, exact name, or partial name (case-insensitive)
+      const recipient = players.find(p =>
+        p.alive && (
+          p.id === rawTarget ||
+          p.name.toLowerCase() === lowerTarget ||
+          p.name.toLowerCase().includes(lowerTarget) ||
+          lowerTarget.includes(p.name.toLowerCase())
+        )
       )
+      console.log(`[resolveRound R${round}] ${giver.name} → "${rawTarget}" resolved to: ${recipient?.name ?? 'NULL'}`)
       // Skip self-donations regardless of how the target was specified
       if (recipient && recipient.id === giver.id) continue
       if (!recipient) {
         donationsApplied.push({
           gameId, round,
           fromPlayerId: giver.id,
-          toPlayerId:   entry.toPlayerId,
+          toPlayerId:   rawTarget,
           amount:       entry.amount,
           applied:      false,
           failureReason: 'recipient dead or not found',
@@ -102,11 +110,16 @@ export function resolveRound(input: ResolutionInput): ResolutionResult {
   const tally: Record<string, number> = {}
 
   for (const p of alivePlayers) {
-    const raw = p.submittedVoteTarget
-    if (!raw) continue
-    // Resolve name → ID so tally keys are always IDs
-    const resolved = alivePlayers.find(q => q.id === raw || q.name === raw)
-    if (resolved) tally[resolved.id] = (tally[resolved.id] ?? 0) + 1
+    for (const raw of (p.submittedVoteTargets ?? [])) {
+      const lower = raw.toLowerCase()
+      const resolved = alivePlayers.find(q =>
+        q.id === raw ||
+        q.name.toLowerCase() === lower ||
+        q.name.toLowerCase().includes(lower) ||
+        lower.includes(q.name.toLowerCase())
+      )
+      if (resolved) tally[resolved.id] = (tally[resolved.id] ?? 0) + 1
+    }
   }
 
   const threshold = alivePlayers.length / 2
@@ -159,12 +172,16 @@ export function buildVoteRecords(
   round: number,
   players: PlayerState[],
 ): VoteRecord[] {
-  return players
-    .filter(p => p.alive)
-    .map(p => ({
-      gameId,
-      round,
-      voterPlayerId:  p.id,
-      targetPlayerId: p.submittedVoteTarget,
-    }))
+  const records: VoteRecord[] = []
+  for (const p of players.filter(q => q.alive)) {
+    const targets = p.submittedVoteTargets ?? []
+    if (targets.length === 0) {
+      records.push({ gameId, round, voterPlayerId: p.id, targetPlayerId: null })
+    } else {
+      for (const t of targets) {
+        records.push({ gameId, round, voterPlayerId: p.id, targetPlayerId: t })
+      }
+    }
+  }
+  return records
 }

@@ -38,10 +38,13 @@ function wireEngine(eng: GameEngine) {
       text:           w.text,
       timestamp:      w.timestampMs,
     }
-    if (from?.socketId) io.to(from.socketId).emit('game:whisper', payload)
-    if (to?.socketId)   io.to(to.socketId).emit('game:whisper', payload)
-
-    // In observer mode: broadcast whispers to all observers too (without text content)
+    if (eng.gameMode === 'all_ai_observer') {
+      // Observers see all whispers with full text
+      io.emit('game:whisper', payload)
+    } else {
+      if (from?.socketId) io.to(from.socketId).emit('game:whisper', payload)
+      if (to?.socketId)   io.to(to.socketId).emit('game:whisper', payload)
+    }
     io.emit('game:whisper_meta', {
       fromPlayerId: w.fromPlayerId, toPlayerId: w.toPlayerId, round: w.round,
     })
@@ -117,16 +120,10 @@ io.on('connection', (socket: Socket) => {
 
     console.log(`[join] ${player.name} (${player.type})`)
 
-    if (engine.playerCount === 1 && payload.type === 'human') {
-      setTimeout(() => {
-        if (engine.phase === 'lobby') {
-          engine.fillWithAI()
-          engine.start().catch(console.error)
-        }
-      }, 2000)
-      return
+    // Fill remaining slots with AI then start
+    if (engine.gameMode === 'human_vs_ai' && engine.playerCount < engine.maxPlayers) {
+      engine.fillWithAI()
     }
-
     if (engine.playerCount >= engine.maxPlayers && engine.phase === 'lobby') {
       engine.start().catch(console.error)
     }
@@ -163,10 +160,10 @@ io.on('connection', (socket: Socket) => {
   })
 
   // ── vote ──────────────────────────────────────────────────────────────────
-  socket.on('game:vote', (payload: { targetId: string | null }) => {
+  socket.on('game:vote', (payload: { targetIds: string[] }) => {
     const sender = engine.getPlayerBySocket(socket.id)
     if (!sender) return
-    engine.submitVote(sender.id, payload.targetId)
+    engine.submitVotes(sender.id, payload.targetIds ?? [])
   })
 
   // ── observer: get agent dashboard ─────────────────────────────────────────

@@ -20,10 +20,10 @@ export const AI_OUTPUT_SCHEMA = {
       items: {
         type: 'OBJECT',
         properties: {
-          to_player_id: { type: 'STRING' },
-          text:         { type: 'STRING' },
+          to_player: { type: 'STRING' },
+          text:      { type: 'STRING' },
         },
-        required: ['to_player_id', 'text'],
+        required: ['to_player', 'text'],
       },
     },
     donation_plan: {
@@ -31,14 +31,14 @@ export const AI_OUTPUT_SCHEMA = {
       items: {
         type: 'OBJECT',
         properties: {
-          to_player_id: { type: 'STRING' },
-          amount:       { type: 'NUMBER' },
+          to_player: { type: 'STRING' },
+          amount:    { type: 'NUMBER' },
         },
-        required: ['to_player_id', 'amount'],
+        required: ['to_player', 'amount'],
       },
     },
     sacrifice:        { type: 'BOOLEAN' },
-    player_to_eject:  { type: 'STRING' },
+    player_to_eject: { type: 'STRING' },
   },
   required: ['reasoning_trace', 'public_messages', 'whispers', 'donation_plan', 'sacrifice', 'player_to_eject'],
 }

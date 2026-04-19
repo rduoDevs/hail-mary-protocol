@@ -6,6 +6,8 @@ import HUD from './components/HUD'
 import ModeSelector from './components/ModeSelector'
 import ObserverControls from './components/ObserverControls'
 import AgentPopupDashboard from './components/AgentPopupDashboard'
+import ChatPanel from './components/ChatPanel'
+import ResolutionBanner from './components/ResolutionBanner'
 
 export default function App() {
   const joined           = useGameStore((s) => s.joined)
@@ -79,11 +81,13 @@ export default function App() {
       {/* Human-vs-AI mode: full HUD */}
       {joined && !isObserver && <HUD />}
 
-      {/* Observer mode: simplified observer panel */}
+      {/* Observer mode: simplified observer panel + read-only chat + resolution banner */}
       {isObserver && (
         <>
           <ObserverHUD />
           <ObserverControls />
+          <ChatPanel readOnly />
+          <ResolutionBanner />
         </>
       )}
 
@@ -120,7 +124,7 @@ function ObserverHUD() {
     }}>
       <span style={{ fontSize: 7, color: '#cc88ff', letterSpacing: 2 }}>OBSERVER</span>
       <span style={{ fontSize: 6, color: '#223344' }}>RND {round}/{totalRnds}</span>
-      <span style={{ fontSize: 6, color: phaseColor, letterSpacing: 1 }}>[{phase?.toUpperCase()}]</span>
+      <span style={{ fontSize: 6, color: phaseColor, letterSpacing: 1 }}>[{phase === 'voting' ? 'EJECT' : phase?.toUpperCase()}]</span>
       <div style={{ marginLeft: 'auto', display: 'flex', gap: 20 }}>
         <span style={{ fontSize: 6, color: '#00e5ff' }}>
           PUB O₂: <strong style={{ color: '#00ffaa' }}>{publicOxy}</strong>

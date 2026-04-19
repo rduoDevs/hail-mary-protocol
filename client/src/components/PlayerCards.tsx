@@ -15,7 +15,7 @@ export default function PlayerCards() {
     <div style={{
       position: 'absolute', top: 56, right: 10,
       display: 'flex', flexDirection: 'column', gap: 4,
-      fontFamily: FONT, zIndex: 10, maxHeight: 'calc(100vh - 200px)', overflowY: 'auto',
+      fontFamily: FONT, zIndex: 10, maxHeight: 'calc(100vh - 260px)', overflowY: 'auto',
     }}>
       {players.map(p => {
         const isLocal = p.id === localId

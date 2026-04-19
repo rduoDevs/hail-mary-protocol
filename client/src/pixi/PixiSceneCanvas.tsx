@@ -57,7 +57,7 @@ export default function PixiSceneCanvas() {
     <div style={{ position: 'fixed', inset: 0 }}>
       <canvas
         ref={canvasRef}
-        style={{ display: 'block', width: '100%', height: '100%' }}
+        style={{ display: 'block', width: '100%', height: '100%', imageRendering: 'pixelated' }}
         width={window.innerWidth}
         height={window.innerHeight}
       />

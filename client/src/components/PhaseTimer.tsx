@@ -33,7 +33,7 @@ export default function PhaseTimer() {
     <div
       style={{
         position: 'absolute',
-        bottom: 10,
+        bottom: 20,
         right: 10,
         background: 'rgba(4,4,16,0.96)',
         border: `2px solid ${displayColor}`,
@@ -54,7 +54,7 @@ export default function PhaseTimer() {
         }
       `}</style>
       <div style={{ fontSize: 7, color: phaseColor, letterSpacing: 2, marginBottom: 6 }}>
-        {phaseInfo.phase.toUpperCase()}
+        {phaseInfo.phase === 'voting' ? 'EJECT' : phaseInfo.phase.toUpperCase()}
       </div>
       <div
         style={{

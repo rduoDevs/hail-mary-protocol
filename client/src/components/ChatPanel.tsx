@@ -6,7 +6,7 @@ const FONT    = "'Press Start 2P', monospace"
 const BODY    = "'VT323', 'Courier New', monospace"
 const SCANLINE = 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.1) 3px, rgba(0,0,0,0.1) 4px)'
 
-export default function ChatPanel() {
+export default function ChatPanel({ readOnly = false }: { readOnly?: boolean }) {
   const messages          = useGameStore((s) => s.messages)
   const whispers          = useGameStore((s) => s.whispers)
   const phase             = useGameStore((s) => s.phaseInfo?.phase ?? s.gameState?.phase)
@@ -53,16 +53,19 @@ export default function ChatPanel() {
     if (e.key === 'Enter') tab === 'all' ? sendPublic() : sendWhisper()
   }
 
-  const myWhispers   = whispers.filter(w => w.fromPlayerId === localId || w.toPlayerId === localId)
+  const myWhispers   = readOnly
+    ? whispers
+    : whispers.filter(w => w.fromPlayerId === localId || w.toPlayerId === localId)
   const otherPlayers = players.filter(p => p.id !== localId)
 
   return (
     <div
       style={{
         position: 'absolute',
-        bottom: 10,
+        bottom: 20,
         left: 10,
-        width: 295,
+        width: 'min(420px, calc(50vw - 20px))',
+        maxHeight: 'calc(100vh - 80px)',
         background: 'rgba(4,4,16,0.96)',
         border: '2px solid #001533',
         borderLeft: '2px solid #00e5ff',
@@ -108,7 +111,7 @@ export default function ChatPanel() {
       </div>
 
       {/* Message log */}
-      <div style={{ height: 132, overflowY: 'auto', padding: '5px 8px', display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <div style={{ flex: 1, minHeight: 80, overflowY: 'auto', padding: '5px 8px', display: 'flex', flexDirection: 'column', gap: 3 }}>
         {tab === 'all' ? (
           messages.length === 0
             ? <div style={{ color: '#223344', fontSize: 7 }}>NO TRANSMISSIONS</div>
@@ -125,8 +128,12 @@ export default function ChatPanel() {
             ? <div style={{ color: '#223344', fontSize: 7 }}>NO PRIVATE MSGS</div>
             : myWhispers.map((w, i) => {
               const isMine = w.fromPlayerId === localId
-              const other  = players.find(p => p.id === (isMine ? w.toPlayerId : w.fromPlayerId))
-              const label  = isMine ? `YOU>>${other?.name ?? '?'}` : `${w.fromPlayerName}>>YOU`
+              const toPlayer = players.find(p => p.id === w.toPlayerId)
+              const label = readOnly
+                ? `${w.fromPlayerName}>>${toPlayer?.name ?? w.toPlayerId}`
+                : isMine
+                  ? `YOU>>${toPlayer?.name ?? '?'}`
+                  : `${w.fromPlayerName}>>YOU`
               return (
                 <div key={i} style={{ fontFamily: BODY, fontSize: 14, lineHeight: 1.3 }}>
                   <span style={{ color: '#cc88ff' }}>[{label}]&nbsp;</span>
@@ -139,7 +146,7 @@ export default function ChatPanel() {
       </div>
 
       {/* Whisper target selector */}
-      {tab === 'whisper' && (
+      {!readOnly && tab === 'whisper' && (
         <div style={{ padding: '4px 8px', borderTop: '1px solid #0d1e2e' }}>
           <select
             value={whisperTarget}
@@ -165,8 +172,8 @@ export default function ChatPanel() {
         </div>
       )}
 
-      {/* Input row */}
-      <div style={{ display: 'flex', borderTop: '1px solid #0d1e2e' }}>
+      {/* Input row — hidden in read-only observer mode */}
+      {!readOnly && <div style={{ display: 'flex', borderTop: '1px solid #0d1e2e' }}>
         <input
           type="text"
           value={text}
@@ -201,7 +208,7 @@ export default function ChatPanel() {
         >
           TX
         </button>
-      </div>
+      </div>}
     </div>
   )
 }

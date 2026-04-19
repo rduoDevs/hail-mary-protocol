@@ -1,5 +1,5 @@
 const CEREBRAS_BASE = 'https://api.cerebras.ai/v1'
-const MIN_GAP_MS   = 3000  // 3 s between requests → ~20 RPM per key
+const MIN_GAP_MS   = 500   // 0.5 s between requests per key — Cerebras handles burst well
 
 // Per-key independent queues — each key gets its own serial lane
 interface Lane { queue: Promise<void>; lastSent: number }
@@ -62,11 +62,23 @@ async function _call(
   })
 
   for (let attempt = 0; attempt < 4; attempt++) {
-    const res = await fetch(`${CEREBRAS_BASE}/chat/completions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-      body,
-    })
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 25_000)
+    let res: Response
+    try {
+      res = await fetch(`${CEREBRAS_BASE}/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+        body,
+        signal: controller.signal,
+      })
+    } catch (err: any) {
+      clearTimeout(timeout)
+      if (err.name === 'AbortError') throw new Error('[Cerebras] request timed out after 25s')
+      throw err
+    } finally {
+      clearTimeout(timeout)
+    }
 
     if (res.ok) {
       const json = await res.json() as { choices: { message: { content: string } }[] }

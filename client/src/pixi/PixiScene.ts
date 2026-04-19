@@ -6,30 +6,41 @@ const HULL_T  = 20
 const SPEED   = 200
 
 const C = {
-  BG:         0x020610,
-  HULL:       0x0e1d2e,
-  HULL_MID:   0x162638,
-  HULL_LIGHT: 0x1e3048,
-  INTERIOR:   0x070e1a,
-  FLOOR:      0x0f1c2c,
-  FLOOR_LINE: 0x182a3e,
-  CEILING:    0x09121e,
-  PIPE:       0x1d3550,
-  PIPE_JOINT: 0x2a4a6a,
-  ENGINE_CORE:0x2233cc,
-  ENG_HOT:    0x8844ff,
-  PANEL:      0x0b2218,
-  PANEL_LIT:  0x1a3a28,
-  RIVET:      0x2a3c50,
-  WIN_FRAME:  0x1c3555,
-  WIN_GLASS:  0x010c1a,
-  CYAN:       0x00e5ff,
-  RED:        0xff3333,
-  GOLD:       0xffd700,
-  GREEN:      0x00ff88,
-  AMBER:      0xff8800,
-  PURPLE:     0xcc88ff,
+  BG:         0x0b0a1e,
+  HULL:       0x1a3f6e,
+  HULL_MID:   0x265890,
+  HULL_LIGHT: 0x3272b8,
+  INTERIOR:   0x0c1a30,
+  FLOOR:      0x142540,
+  FLOOR_LINE: 0x1e3a60,
+  CEILING:    0x0a1525,
+  PIPE:       0x1e4870,
+  PIPE_JOINT: 0x2e689a,
+  ENGINE_CORE:0x3344ee,
+  ENG_HOT:    0xaa44ff,
+  PANEL:      0x0e3020,
+  PANEL_LIT:  0x1e5035,
+  RIVET:      0x3a5575,
+  WIN_FRAME:  0x2a5888,
+  WIN_GLASS:  0x091828,
+  CYAN:       0x00ffff,
+  RED:        0xff2244,
+  GOLD:       0xffdd00,
+  GREEN:      0x44ff88,
+  AMBER:      0xffaa00,
+  PURPLE:     0xdd88ff,
+  BLACK:      0x000000,
 }
+
+// Per-slot vibrant pixel-art colors
+const CREW_COLORS = [
+  0x00ffff,  // cyan
+  0xff44aa,  // pink
+  0x44ff88,  // green
+  0xffdd22,  // yellow
+  0xff8844,  // orange
+  0xaa66ff,  // purple
+]
 
 interface Star { g: PIXI.Graphics; spd: number; W: number; H: number }
 
@@ -84,7 +95,11 @@ export class PixiScene {
 
   private readonly onKD = (e: KeyboardEvent) => {
     const k = e.key.toLowerCase()
-    if (['w','a','s','d'].includes(k)) { e.preventDefault(); this.keys.add(k) }
+    if (!['w','a','s','d'].includes(k)) return
+    const active = document.activeElement
+    if (active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement || active instanceof HTMLSelectElement) return
+    e.preventDefault()
+    this.keys.add(k)
   }
   private readonly onKU = (e: KeyboardEvent) => { this.keys.delete(e.key.toLowerCase()) }
 
@@ -211,13 +226,18 @@ export class PixiScene {
   }
 
   private buildGrid() {
-    const { W, H } = this
+    const { H } = this
     const g = new PIXI.Graphics()
-    g.lineStyle(1, 0x001a44, 0.04)
-    const gs = 66
-    for (let x = 0; x <= W; x += gs) { g.moveTo(x,0); g.lineTo(x,H) }
-    for (let y = 0; y <= H; y += gs) { g.moveTo(0,y); g.lineTo(W,y) }
-    this.app.stage.addChild(g)
+    const gs = 16
+    // minor lines
+    g.lineStyle(1, 0x1a3a6a, 0.10)
+    for (let x = 0; x <= WORLD_W; x += gs)   { g.moveTo(x,0); g.lineTo(x,H) }
+    for (let y = 0; y <= H; y += gs)          { g.moveTo(0,y); g.lineTo(WORLD_W,y) }
+    // major lines every 8 tiles (128px)
+    g.lineStyle(1, 0x2a5aaa, 0.18)
+    for (let x = 0; x <= WORLD_W; x += gs*8) { g.moveTo(x,0); g.lineTo(x,H) }
+    for (let y = 0; y <= H; y += gs*8)        { g.moveTo(0,y); g.lineTo(WORLD_W,y) }
+    this.world.addChild(g)
   }
 
   private buildShipExterior() {
@@ -316,8 +336,8 @@ export class PixiScene {
     const crewW = crewRight - crewLeft
     const container = new PIXI.Container()
 
-    for (let i = 0; i < 6; i++) {
-      const t  = (i + 0.5) / 6
+    for (let i = 0; i < 4; i++) {
+      const t  = (i + 0.5) / 4
       const bx = crewLeft + t * crewW
       const by = crewBottom
 
@@ -331,7 +351,7 @@ export class PixiScene {
       gfx.x = bx; gfx.y = by
       gfx.interactive = true
       gfx.cursor = 'pointer'
-      this.drawCrew(gfx, C.CYAN, true, false, false)
+      this.drawCrew(gfx, CREW_COLORS[i % CREW_COLORS.length], true, false, false)
       container.addChild(gfx)
 
       const label = new PIXI.Text('CREW', {
@@ -377,36 +397,115 @@ export class PixiScene {
     this.world.addChild(container)
   }
 
+  private shade(color: number, f: number): number {
+    const r = Math.min(255, Math.floor(((color >> 16) & 0xff) * f))
+    const g = Math.min(255, Math.floor(((color >> 8)  & 0xff) * f))
+    const b = Math.min(255, Math.floor( (color        & 0xff) * f))
+    return (r << 16) | (g << 8) | b
+  }
+
   private drawCrew(g: PIXI.Graphics, color: number, alive: boolean, isAi: boolean, isLocal: boolean) {
     g.clear()
     if (!alive) {
-      g.lineStyle(2, 0x444455)
-      g.moveTo(-7,-10); g.lineTo(7,10)
-      g.moveTo(7,-10);  g.lineTo(-7,10)
+      // Ghost/skull — faded X mark
+      g.lineStyle(2, 0x334455, 0.7)
+      g.moveTo(-8,-20); g.lineTo(8,8)
+      g.moveTo(8,-20);  g.lineTo(-8,8)
+      g.lineStyle(1, 0x223344, 0.4)
+      g.drawRect(-9,-21,18,30)
       g.lineStyle(0)
       return
     }
-    if (isLocal) {
-      g.beginFill(color, 0.08); g.drawRect(-18,-28,36,52); g.endFill()
-      g.lineStyle(1,color,0.6); g.drawRect(-18,-28,36,52); g.lineStyle(0)
-    } else {
-      g.beginFill(color, 0.04); g.drawRect(-14,-22,28,40); g.endFill()
+
+    const hi  = this.shade(color, 1.45)   // highlight
+    const mid = color                      // base
+    const dk  = this.shade(color, 0.55)   // shadow
+    const dkk = this.shade(color, 0.30)   // deep shadow
+
+    // AI antenna (3-pixel wide pixel rod + round tip)
+    if (isAi) {
+      g.beginFill(dkk);    g.drawRect(-1,-38,3,12); g.endFill()
+      g.beginFill(0xff3333);g.drawRect(-2,-40,5,4); g.endFill()
+      g.beginFill(0xff8888);g.drawRect(-1,-40,3,2); g.endFill()
     }
-    g.beginFill(color); g.drawRect(-6,-18,12,10); g.endFill()
-    g.beginFill(isAi ? 0xff4444 : 0xffffff)
-    g.drawRect(-4,-15,3,3); g.drawRect(1,-15,3,3)
-    g.endFill()
-    g.beginFill(color,0.85); g.drawRect(-6,-6,12,12); g.endFill()
-    g.beginFill(color,0.70); g.drawRect(-10,-5,4,8); g.drawRect(6,-5,4,8); g.endFill()
-    g.beginFill(color,0.80); g.drawRect(-5,6,4,8); g.drawRect(1,6,4,8); g.endFill()
-    if (isAi) { g.beginFill(0xff2222,0.55); g.drawRect(-6,-16,12,2); g.endFill() }
-    if (isLocal) { g.beginFill(color,0.9); g.drawRect(-3,-30,6,4); g.drawRect(-1,-34,2,4); g.endFill() }
+
+    // ── Helmet ──────────────────────────────────────────────────────────
+    // top highlight strip
+    g.beginFill(hi);  g.drawRect(-6,-28,12,2); g.endFill()
+    // main helmet shell
+    g.beginFill(mid); g.drawRect(-6,-26,12,10); g.endFill()
+    // left/right edge shading
+    g.beginFill(dk);  g.drawRect(-6,-26,2,10); g.endFill()
+    g.beginFill(dkk); g.drawRect(4,-26,2,10);  g.endFill()
+    // bottom edge shadow
+    g.beginFill(dkk); g.drawRect(-6,-17,12,1); g.endFill()
+
+    // ── Visor ────────────────────────────────────────────────────────────
+    const visorBase = isAi ? 0xcc0000 : 0x003355
+    const visorHi   = isAi ? 0xff6644 : 0x0088cc
+    g.beginFill(visorBase);         g.drawRect(-4,-24,8,6);  g.endFill()
+    g.beginFill(visorHi, 0.6);      g.drawRect(-4,-24,8,2);  g.endFill()   // visor shine
+    g.beginFill(0xffffff, 0.18);    g.drawRect(-4,-24,3,2);  g.endFill()   // glint
+
+    // ── Neck connector ───────────────────────────────────────────────────
+    g.beginFill(dk);  g.drawRect(-3,-16,6,3); g.endFill()
+
+    // ── Torso ────────────────────────────────────────────────────────────
+    g.beginFill(hi);  g.drawRect(-7,-13,14,2);  g.endFill()   // shoulder highlight
+    g.beginFill(mid); g.drawRect(-7,-11,14,18); g.endFill()   // main body
+    g.beginFill(dk);  g.drawRect(-7,-11,2,18);  g.endFill()   // left edge shadow
+    g.beginFill(dkk); g.drawRect(5,-11,2,18);   g.endFill()   // right edge shadow
+    g.beginFill(dkk); g.drawRect(-7,6,14,2);    g.endFill()   // bottom shadow
+
+    // Chest panel detail
+    g.beginFill(dkk);         g.drawRect(-3,-9,8,8);  g.endFill()
+    g.beginFill(0x000a18,0.8);g.drawRect(-2,-8,6,6);  g.endFill()
+    // indicator lights
+    g.beginFill(isAi ? 0xff2200 : 0x00ff88); g.drawRect(-1,-7,2,2); g.endFill()
+    g.beginFill(isAi ? 0xff8800 : 0x00aaff); g.drawRect(2,-7,2,2);  g.endFill()
+    g.beginFill(isAi ? 0xffcc00 : 0xffffff,0.4); g.drawRect(-1,-4,5,1); g.endFill()
+
+    // ── Arms ─────────────────────────────────────────────────────────────
+    // left arm
+    g.beginFill(hi);  g.drawRect(-12,-11,5,2);  g.endFill()
+    g.beginFill(mid); g.drawRect(-12,-9,5,12);  g.endFill()
+    g.beginFill(dkk); g.drawRect(-12,-9,1,12);  g.endFill()
+    g.beginFill(dk);  g.drawRect(-12,2,5,2);    g.endFill()
+    // right arm
+    g.beginFill(hi);  g.drawRect(7,-11,5,2);    g.endFill()
+    g.beginFill(mid); g.drawRect(7,-9,5,12);    g.endFill()
+    g.beginFill(dkk); g.drawRect(11,-9,1,12);   g.endFill()
+    g.beginFill(dk);  g.drawRect(7,2,5,2);      g.endFill()
+
+    // ── Legs ─────────────────────────────────────────────────────────────
+    // left leg
+    g.beginFill(mid); g.drawRect(-7,8,6,10);  g.endFill()
+    g.beginFill(dkk); g.drawRect(-7,8,1,10);  g.endFill()
+    g.beginFill(dk);  g.drawRect(-7,8,6,2);   g.endFill()   // top joint
+    // boot
+    g.beginFill(dk);  g.drawRect(-8,17,7,3);  g.endFill()
+    // right leg
+    g.beginFill(mid); g.drawRect(1,8,6,10);   g.endFill()
+    g.beginFill(dkk); g.drawRect(6,8,1,10);   g.endFill()
+    g.beginFill(dk);  g.drawRect(1,8,6,2);    g.endFill()
+    // boot
+    g.beginFill(dk);  g.drawRect(1,17,7,3);   g.endFill()
+
+    // ── Local player marker ──────────────────────────────────────────────
+    if (isLocal) {
+      g.lineStyle(1, color, 0.9)
+      g.drawRect(-14,-30,28,52)
+      g.lineStyle(0)
+      // diamond marker above
+      g.beginFill(color);    g.drawRect(-1,-34,2,2); g.endFill()
+      g.beginFill(hi, 0.8);  g.drawRect(0,-35,1,1);  g.endFill()
+    }
   }
 
   private drawOutline(g: PIXI.Graphics, color: number) {
     g.clear()
-    g.lineStyle(2, color, 0.9)
-    g.drawRect(-16, -20, 32, 44)
+    g.lineStyle(1, color, 0.9)
+    g.drawRect(-14, -30, 28, 52)
     g.lineStyle(0)
   }
 
@@ -414,16 +513,16 @@ export class PixiScene {
     const { players } = state
     this.inDanger = state.publicOxygen < 8
 
-    players.slice(0, 6).forEach((p, i) => {
+    players.slice(0, 4).forEach((p, i) => {
       const node = this.playerNodes[i]
       if (!node) return
       node.playerId = p.id
       node.isAI     = p.type === 'ai'
       const isLocal = p.id === this.localPlayerId
-      const color   = p.type === 'human' ? C.CYAN : C.PURPLE
+      const color   = CREW_COLORS[i % CREW_COLORS.length]
       this.drawCrew(node.gfx, color, p.alive, p.type === 'ai', isLocal)
       node.label.text = (isLocal ? '> ' : '') + p.name.slice(0, 7).toUpperCase()
-      node.label.style.fill = !p.alive ? 0x444455 : isLocal ? 0xffffff : p.type === 'human' ? C.CYAN : C.PURPLE
+      node.label.style.fill = !p.alive ? 0x444455 : isLocal ? 0xffffff : color
       this.drawOutline(node.outline, color)
     })
   }
@@ -461,7 +560,13 @@ export class PixiScene {
     }
 
     // Camera
-    if (localNode && !isObserver) {
+    if (isObserver) {
+      // Freecam: WASD pans the world freely
+      const cdx = (this.keys.has('d') ? 1 : 0) - (this.keys.has('a') ? 1 : 0)
+      const cdy = (this.keys.has('s') ? 1 : 0) - (this.keys.has('w') ? 1 : 0)
+      this.world.x = Math.max(this.W - WORLD_W - 300, Math.min(300, this.world.x - cdx * SPEED * dt_s))
+      this.world.y = Math.max(-250, Math.min(250, this.world.y - cdy * SPEED * dt_s))
+    } else if (localNode) {
       const targetX = this.W / 2 - localNode.gfx.x
       const clamped = Math.max(this.W - WORLD_W, Math.min(0, targetX))
       this.world.x += (clamped - this.world.x) * 0.12

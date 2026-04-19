@@ -65,7 +65,7 @@ export default function ResolutionBanner() {
 
       {/* Vote tally */}
       <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: 6, color: '#556677', letterSpacing: 2, marginBottom: 5 }}>VOTE TALLY</div>
+        <div style={{ fontSize: 6, color: '#556677', letterSpacing: 2, marginBottom: 5 }}>EJECT TALLY</div>
         {voteLines.length === 0
           ? <div style={{ fontFamily: BODY, fontSize: 14, color: '#334455' }}>No votes cast</div>
           : voteLines.map(([n, c]) => (

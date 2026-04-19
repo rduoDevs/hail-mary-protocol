@@ -27,18 +27,29 @@ export class GeminiAgent {
 
       parsed.public_messages = (parsed.public_messages ?? []).slice(0, ctx.config.maxPublicMessagesPerRound)
       parsed.whispers        = (parsed.whispers ?? [])
-        .filter(w => w.to_player_id && w.to_player_id !== ctx.myPlayerId)
+        .map(w => ({ ...w, to_player_id: (w as any).to_player ?? w.to_player_id ?? '' }))
+        .filter(w => {
+          const n = w.to_player_id?.toLowerCase() ?? ''
+          return n && n !== ctx.myName.toLowerCase()
+        })
         .slice(0, ctx.config.maxWhispersPerRound)
       parsed.donation_plan   = (parsed.donation_plan ?? [])
-        .filter(d => d.amount > 0 && d.to_player_id !== ctx.myPlayerId)
+        .map(d => ({ ...d, to_player_id: (d as any).to_player ?? d.to_player_id ?? '' }))
+        .filter(d => {
+          const n = d.to_player_id?.toLowerCase() ?? ''
+          return d.amount > 0 && n && n !== ctx.myName.toLowerCase()
+        })
       parsed.sacrifice       = Boolean(parsed.sacrifice)
-      // Model outputs "player_to_eject"; map to internal vote_target
-      const rawEject = (parsed as any).player_to_eject ?? parsed.vote_target
-      const aliveIds = ctx.alivePlayers.map(p => p.id)
-      const byName = ctx.alivePlayers.find(p => p.name.toLowerCase() === String(rawEject ?? '').toLowerCase())
-      parsed.vote_target = aliveIds.includes(rawEject) ? rawEject
-        : byName ? byName.id
-        : aliveIds[Math.floor(Math.random() * aliveIds.length)] ?? null
+      // Model outputs "player_to_eject" as a name string
+      const rawEject = (parsed as any).player_to_eject ?? null
+      const lower = String(rawEject ?? '').toLowerCase()
+      const byName = ctx.alivePlayers.find(p =>
+        p.id === rawEject || p.name.toLowerCase() === lower ||
+        p.name.toLowerCase().includes(lower) || lower.includes(p.name.toLowerCase())
+      )
+      parsed.player_to_eject = byName?.id
+        ?? ctx.alivePlayers[Math.floor(Math.random() * ctx.alivePlayers.length)]?.id
+        ?? null
 
       const totalDonate = parsed.donation_plan.reduce((s, d) => s + d.amount, 0)
       if (totalDonate > ctx.config.maxDonationPerRound) {
@@ -56,7 +67,7 @@ export class GeminiAgent {
     }
   }
 
-  private heuristicFallback(ctx: AIPlayerContext): AITurnOutput {
+  heuristicFallback(ctx: AIPlayerContext): AITurnOutput {
     const others    = ctx.alivePlayers.filter(p => p.id !== ctx.myPlayerId)
     const lowOxygen = ctx.myPrivateOxygen < 3
     const donationPlan: { to_player_id: string; amount: number }[] = []
@@ -72,7 +83,7 @@ export class GeminiAgent {
       whispers: [],
       donation_plan: donationPlan,
       sacrifice: false,
-      vote_target: ctx.alivePlayers.length > 0
+      player_to_eject: ctx.alivePlayers.length > 0
         ? ctx.alivePlayers[Math.floor(Math.random() * ctx.alivePlayers.length)].id
         : null,
     }

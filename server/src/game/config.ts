@@ -2,7 +2,7 @@ export type GameMode = 'human_vs_ai' | 'all_ai_observer'
 
 export interface GameConfig {
   numPlayers: number
-  maxPlayerSlotsForExport: number   // always 6 for padded matrix export
+  maxPlayerSlotsForExport: number   // always 4 for padded matrix export
   totalRounds: number
   startPublicOxygen: number
   startPrivateOxygen: number
@@ -28,7 +28,7 @@ export interface GameConfig {
 
 export const DEFAULT_CONFIG: GameConfig = {
   numPlayers: 4,
-  maxPlayerSlotsForExport: 6,
+  maxPlayerSlotsForExport: 4,
   totalRounds: 5,
   startPublicOxygen: 16,
   startPrivateOxygen: 8,

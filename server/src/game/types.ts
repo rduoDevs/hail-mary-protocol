@@ -19,7 +19,7 @@ export interface PlayerState {
   currentRoundWhispersSent: number
   currentRoundPublicMessagesSent: number
   submittedDonationPlan: DonationPlan | null
-  submittedVoteTarget: string | null
+  submittedVoteTargets: string[]
   submittedSacrifice: boolean
   donationSubmitted: boolean
   voteSubmitted: boolean
@@ -208,7 +208,7 @@ export interface AITurnOutput {
   whispers: { to_player_id: string; text: string }[]
   donation_plan: { to_player_id: string; amount: number }[]
   sacrifice: boolean
-  vote_target: string | null
+  player_to_eject: string | null
 }
 
 // ─── Metrics ──────────────────────────────────────────────────────────────────

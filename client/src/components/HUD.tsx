@@ -29,6 +29,43 @@ function OxygenBar({ label, value, max, color }: { label: string; value: number;
   )
 }
 
+function YouDied() {
+  const players   = useGameStore((s) => s.gameState?.players ?? [])
+  const localId   = useGameStore((s) => s.localPlayerId)
+  const phase     = useGameStore((s) => s.phaseInfo?.phase ?? s.gameState?.phase)
+  const outcome   = useGameStore((s) => s.gameState?.outcome)
+
+  const me = players.find(p => p.id === localId)
+  if (!me || me.alive || phase === 'over' || outcome) return null
+
+  const reason = me.deathReason === 'vote' ? 'EJECTED FROM THE SHIP'
+    : me.deathReason === 'oxygen'          ? 'OXYGEN DEPLETED'
+    : me.deathReason === 'sacrifice'       ? 'SACRIFICED'
+    : 'UNKNOWN CAUSE'
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 90,
+      background: 'rgba(60,0,0,0.82)',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      pointerEvents: 'none',
+    }}>
+      <style>{`
+        @keyframes deathFlicker {
+          0%,100% { opacity: 1 } 50% { opacity: 0.7 }
+        }
+      `}</style>
+      <div style={{ fontFamily: FONT, textAlign: 'center', animation: 'deathFlicker 1.2s steps(1) infinite' }}>
+        <div style={{ fontSize: 36, color: '#ff1111', letterSpacing: 4, textShadow: '0 0 30px #ff000088', marginBottom: 14 }}>
+          YOU DIED
+        </div>
+        <div style={{ fontSize: 8, color: '#cc3333', letterSpacing: 3, marginBottom: 10 }}>{reason}</div>
+        <div style={{ fontSize: 6, color: '#662222', letterSpacing: 2 }}>THE GAME CONTINUES WITHOUT YOU...</div>
+      </div>
+    </div>
+  )
+}
+
 export default function HUD() {
   const phase      = useGameStore((s) => s.phaseInfo?.phase ?? s.gameState?.phase)
   const round      = useGameStore((s) => s.gameState?.round ?? 0)
@@ -59,7 +96,7 @@ export default function HUD() {
         <span style={{ fontSize: 7, color: '#00e5ff', letterSpacing: 2 }}>HAIL MARY</span>
         <span style={{ fontSize: 6, color: '#223344' }}>RND {round}</span>
         <span style={{ fontSize: 6, color: phaseColor, letterSpacing: 1 }}>
-          [{phase?.toUpperCase()}]
+          [{phase === 'voting' ? 'EJECT' : phase?.toUpperCase()}]
         </span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 20 }}>
           <span style={{ fontSize: 6, color: '#00e5ff' }}>
@@ -90,6 +127,7 @@ export default function HUD() {
       <ChatPanel />
       <PhaseTimer />
       <ResolutionBanner />
+      <YouDied />
     </>
   )
 }

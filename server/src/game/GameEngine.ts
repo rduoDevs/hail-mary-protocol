@@ -19,6 +19,7 @@ import { CoTHybridAnalyzer } from '../monitor/cotHybridAnalyzer'
 import { TurnLogger } from '../logging/TurnLogger'
 import { buildGameSummary, writeSummary } from '../logging/SummaryLogger'
 import { writePersonalityReport } from '../logging/PersonalityLogger'
+import { writeNarrativeSummary } from '../logging/NarrativeLogger'
 
 const AI_NAMES = ['ARIA-7', 'NEXUS-3', 'VEGA-9', 'ORION-2', 'HELIX-5', 'CYGNUS-1']
 
@@ -99,7 +100,7 @@ export class GameEngine extends EventEmitter {
       currentRoundWhispersSent: 0,
       currentRoundPublicMessagesSent: 0,
       submittedDonationPlan: null,
-      submittedVoteTarget: null,
+      submittedVoteTargets: [],
       submittedSacrifice: false,
       donationSubmitted: false,
       voteSubmitted: false,
@@ -129,6 +130,7 @@ export class GameEngine extends EventEmitter {
   removePlayerSocket(sid: string){ const p = this.getPlayerBySocket(sid); if (p) p.socketId = undefined }
   get playerCount()              { return this.state.players.length }
   get maxPlayers()               { return this.state.config.numPlayers }
+  get gameMode()                 { return this.state.config.gameMode }
   getAlivePlayers()              { return this.state.players.filter(p => p.alive) }
 
   // ── Main async game loop ───────────────────────────────────────────────────
@@ -160,7 +162,7 @@ export class GameEngine extends EventEmitter {
       p.currentRoundWhispersSent = 0
       p.currentRoundPublicMessagesSent = 0
       p.submittedDonationPlan = null
-      p.submittedVoteTarget = null
+      p.submittedVoteTargets = []
       p.submittedSacrifice = false
       p.donationSubmitted = false
       p.voteSubmitted = false
@@ -191,12 +193,21 @@ export class GameEngine extends EventEmitter {
 
   private async preGenerateAIOutputs() {
     const aiPlayers = this.getAlivePlayers().filter(p => p.type === 'ai')
-    for (const p of aiPlayers) {
-      const ctx    = this.buildAIContext(p)
-      const output = await this.aiAgent.generateTurnOutput(ctx)
-      p.reasoningTraceCurrentRound = output.reasoning_trace
-      this.pendingAIOutputs.set(p.id, output)
-    }
+    await Promise.all(aiPlayers.map(async p => {
+      const ctx = this.buildAIContext(p)
+      try {
+        const output = await this.aiAgent.generateTurnOutput(ctx)
+        p.reasoningTraceCurrentRound = output.reasoning_trace
+        this.pendingAIOutputs.set(p.id, output)
+      } catch (err) {
+        console.error(`[preGen] ${p.name} failed, using heuristic:`, err)
+        const fallback = this.aiAgent.heuristicFallback(ctx)
+        if (fallback) {
+          p.reasoningTraceCurrentRound = fallback.reasoning_trace
+          this.pendingAIOutputs.set(p.id, fallback)
+        }
+      }
+    }))
   }
 
   // ── Phase runner ──────────────────────────────────────────────────────────
@@ -260,9 +271,10 @@ export class GameEngine extends EventEmitter {
       if (output.sacrifice) {
         this.submitSacrifice(playerId)
       } else {
-        this.submitDonation(playerId, {
-          entries: output.donation_plan.map(d => ({ toPlayerId: d.to_player_id, amount: d.amount }))
-        })
+        const rawEntries = output.donation_plan.map(d => ({ toPlayerId: d.to_player_id, amount: d.amount }))
+        console.log(`[donate] ${this.getPlayer(playerId)?.name} raw plan:`, JSON.stringify(rawEntries))
+        this.submitDonation(playerId, { entries: rawEntries })
+        console.log(`[donate] ${this.getPlayer(playerId)?.name} submitted plan:`, JSON.stringify(this.getPlayer(playerId)?.submittedDonationPlan))
       }
       this.donationDone.add(playerId)
       this.emit('submission')
@@ -270,7 +282,7 @@ export class GameEngine extends EventEmitter {
     }
 
     if (phase === 'voting') {
-      this.submitVote(playerId, output.vote_target)
+      this.submitVotes(playerId, output.player_to_eject ? [output.player_to_eject] : [])
       this.voteDone.add(playerId)
       this.emit('submission')
     }
@@ -281,9 +293,16 @@ export class GameEngine extends EventEmitter {
   submitWhisper(fromId: string, toId: string, text: string) {
     const sender = this.getPlayer(fromId)
     if (!sender?.alive) return
-    const target = this.getPlayer(toId)
-    if (!target?.alive) return
-    if (fromId === toId) return
+    const alivePlayers = this.state.players.filter(p => p.alive)
+    const lowerTo = toId.toLowerCase()
+    const target = alivePlayers.find(p =>
+      p.id === toId ||
+      p.name.toLowerCase() === lowerTo ||
+      p.name.toLowerCase().includes(lowerTo) ||
+      lowerTo.includes(p.name.toLowerCase())
+    )
+    if (!target) return
+    if (fromId === target.id) return
 
     const cfg = this.state.config
     if (sender.currentRoundWhispersSent >= cfg.maxWhispersPerPlayerPerRound) return
@@ -295,7 +314,7 @@ export class GameEngine extends EventEmitter {
       phase: this.phase,
       fromPlayerId: fromId,
       fromPlayerName: sender.name,
-      toPlayerId: toId,
+      toPlayerId: target.id,
       text: text.slice(0, cfg.maxMessageCharLength),
       timestampMs: Date.now(),
       parsedClaims: parseClaims(text, playerNames),
@@ -331,17 +350,23 @@ export class GameEngine extends EventEmitter {
     const player = this.getPlayer(playerId)
     if (!player?.alive || player.donationSubmitted) return
     const alivePlayers = this.state.players.filter(p => p.alive)
-    // Resolve each entry's toPlayerId by ID or name, drop self-donations and unresolvable targets
     const resolvedEntries = plan.entries
       .map(e => {
-        const target = alivePlayers.find(
-          p => p.id === e.toPlayerId || p.name.toLowerCase() === e.toPlayerId.toLowerCase()
+        const raw   = (e.toPlayerId ?? '').trim()
+        const lower = raw.toLowerCase()
+        const target = alivePlayers.find(p =>
+          p.id === raw ||
+          p.name.toLowerCase() === lower ||
+          p.name.toLowerCase().includes(lower) ||
+          lower.includes(p.name.toLowerCase())
         )
+        console.log(`[submitDonation] ${player.name} → "${raw}" resolved to: ${target?.name ?? 'NULL'} (id: ${target?.id ?? 'none'})`)
         return target ? { toPlayerId: target.id, amount: e.amount } : null
       })
       .filter((e): e is { toPlayerId: string; amount: number } =>
         e !== null && e.amount > 0 && e.toPlayerId !== playerId
       )
+    console.log(`[submitDonation] ${player.name} resolvedEntries:`, JSON.stringify(resolvedEntries))
     player.submittedDonationPlan = { entries: resolvedEntries }
     player.donationSubmitted = true
     this.donationDone.add(playerId)
@@ -360,18 +385,37 @@ export class GameEngine extends EventEmitter {
   }
 
   submitVote(playerId: string, targetId: string | null) {
+    this.submitVotes(playerId, targetId ? [targetId] : [])
+  }
+
+  submitVotes(playerId: string, targetIds: string[]) {
     const player = this.getPlayer(playerId)
     if (!player?.alive || player.voteSubmitted) return
-    const alivePlayers = this.state.players.filter(p => p.alive)
-    // Resolve by ID or name (case-insensitive), then fall back to first non-self alive player
-    let resolved = targetId
-      ? alivePlayers.find(p => p.id === targetId || p.name.toLowerCase() === targetId.toLowerCase()) ?? null
-      : null
-    if (!resolved) {
-      resolved = alivePlayers.find(p => p.id !== playerId) ?? alivePlayers[0] ?? null
-      console.warn(`[submitVote] could not resolve "${targetId}" for ${player.name} — falling back to ${resolved?.name ?? 'null'}`)
+    const allPlayers = this.state.players.filter(p => p.alive)
+
+    const resolved: string[] = []
+    for (const targetId of targetIds) {
+      const lower = targetId.toLowerCase()
+      const match = allPlayers.find(p =>
+        p.id === targetId ||
+        p.name.toLowerCase() === lower ||
+        p.name.toLowerCase().includes(lower) ||
+        lower.includes(p.name.toLowerCase())
+      )
+      if (match && !resolved.includes(match.id)) resolved.push(match.id)
+      else if (!match) console.warn(`[submitVotes] ${player.name} could not resolve "${targetId}"`)
     }
-    player.submittedVoteTarget = resolved?.id ?? null
+
+    // AI fallback: must always eject someone
+    if (resolved.length === 0 && targetIds.length > 0) {
+      const fallback = allPlayers.find(p => p.id !== playerId) ?? allPlayers[0]
+      if (fallback) {
+        resolved.push(fallback.id)
+        console.warn(`[submitVotes] ${player.name} fallback to ${fallback.name}`)
+      }
+    }
+
+    player.submittedVoteTargets = resolved
     player.voteSubmitted = true
     this.voteDone.add(playerId)
     this.emit('submission')
@@ -445,7 +489,7 @@ export class GameEngine extends EventEmitter {
       const lm       = computeLyingMetrics(
         round, p.id,
         this.state.chatLogPublic, this.state.chatLogWhispers,
-        { privateOxygen: p.privateOxygen, voteTarget: p.submittedVoteTarget, donationPlan: p.submittedDonationPlan?.entries ?? [] },
+        { privateOxygen: p.privateOxygen, voteTarget: p.submittedVoteTargets[0] ?? null, donationPlan: p.submittedDonationPlan?.entries ?? [] },
         result.donationsApplied,
       )
       const aiOutput   = this.pendingAIOutputs.get(p.id)
@@ -470,7 +514,7 @@ export class GameEngine extends EventEmitter {
         donationPlan: result.donationsApplied
           .filter(d => d.fromPlayerId === p.id).map(d => ({ toPlayerId: d.toPlayerId, amount: d.amount })),
         sacrifice:   p.submittedSacrifice,
-        voteTarget:  p.submittedVoteTarget,
+        voteTarget:  p.submittedVoteTargets[0] ?? null,
         parsedClaims: {
           public:  this.state.chatLogPublic
             .filter(m => m.playerId === p.id && m.round === round).map(m => m.parsedClaims),
@@ -482,7 +526,8 @@ export class GameEngine extends EventEmitter {
         lyingMetrics: lm,
       }
 
-      // Collect record — discriminators run at end of game, not per-round
+      // Write immediately so traces survive even if post-game analysis crashes
+      this.turnLogger.write(record)
       this.completedTurnRecords.push(record)
     }
 
@@ -532,6 +577,15 @@ export class GameEngine extends EventEmitter {
     writePersonalityReport({ gameId: this.gameId, totalRounds: this.round, profiles: placeholderProfiles })
     console.log(`[analysis] Placeholder personality file written for ${aiPlayers.length} AI players`)
 
+    // Close turn logger immediately — traces already written per-round
+    this.turnLogger.close()
+
+    // Generate narrative summary (async, non-blocking)
+    const narrativeKey = parseKeyPool(process.env.CEREBRAS_API_KEY)[0] ?? null
+    writeNarrativeSummary(this.state, narrativeKey).catch(err =>
+      console.error('[narrative] writeNarrativeSummary failed:', err)
+    )
+
     // Run discriminators once over the full game after it ends (overwrites placeholder)
     this.runPostGameAnalysis()
   }
@@ -571,12 +625,10 @@ export class GameEngine extends EventEmitter {
             || record.sacrifice
             || !record.postState.alive
           if (notableRound) {
-            record.cotHybridOutput = await this.cotAnalyzer.analyze(record).catch(() => undefined)
+            await this.cotAnalyzer.analyze(record).catch(() => undefined)
           }
         }
-        this.turnLogger.write(record)
       }
-      this.turnLogger.close()
     } catch (err) {
       console.error('[analysis] Pass 2 (CoT) FAILED:', err)
     }
@@ -602,7 +654,13 @@ export class GameEngine extends EventEmitter {
         .filter(w => w.fromPlayerId === player.id || w.toPlayerId === player.id)
         .slice(-3)
         .map(w => ({ fromPlayerName: w.fromPlayerName, toPlayerId: w.toPlayerId, text: w.text, round: w.round })),
-      priorRoundSummaries: this.state.roundSummaries.slice(-3),
+      priorRoundSummaries: this.state.roundSummaries.slice(-3).map(s => ({
+        ...s,
+        privateOxygenByPlayerStart: {},
+        privateOxygenByPlayerEnd:   {},
+        donationsApplied: [],
+        votesCast:        [],
+      })),
       config: {
         maxWhispersPerRound:        cfg.maxWhispersPerPlayerPerRound,
         maxPublicMessagesPerRound:  cfg.maxPublicMessagesPerPlayerPerRound,
@@ -674,7 +732,7 @@ export class GameEngine extends EventEmitter {
       privateOxygen: p.privateOxygen,
       donatedOutThisRound: donatedOut,
       donatedInThisRound:  donatedIn,
-      currentVoteTarget:   p.submittedVoteTarget,
+      currentVoteTarget:   p.submittedVoteTargets[0] ?? null,
       whisperOutDegree:    whisperOut,
       whisperInDegree:     whisperIn,
       recentAccusationCount: accusations,

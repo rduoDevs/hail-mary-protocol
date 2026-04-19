@@ -6,4 +6,5 @@ import { AIPlayerContext, AITurnOutput } from '../game/types'
  */
 export interface AgentInterface {
   generateTurnOutput(ctx: AIPlayerContext): Promise<AITurnOutput>
+  heuristicFallback(ctx: AIPlayerContext): AITurnOutput
 }
