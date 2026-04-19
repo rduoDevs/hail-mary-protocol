@@ -1,9 +1,11 @@
 import * as PIXI from 'pixi.js'
 import type { GameState } from '../store/gameStore'
 
-const WORLD_W = 2600
-const HULL_T  = 20
-const SPEED   = 200
+const WORLD_W   = 2600
+const HULL_T    = 20
+const SPEED     = 200
+const GRAVITY   = 900   // px/s²
+const JUMP_VEL  = -460  // px/s (negative = up in screen space)
 
 const C = {
   BG:         0x0b0a1e,
@@ -44,6 +46,8 @@ const CREW_COLORS = [
 
 interface Star { g: PIXI.Graphics; spd: number; W: number; H: number }
 
+interface Footprint { x: number; floorY: number; alpha: number }
+
 interface PlayerNode {
   gfx:      PIXI.Graphics
   label:    PIXI.Text
@@ -56,6 +60,13 @@ interface PlayerNode {
   playerId: string
   isAI:     boolean
   wanderTimer: number
+  // walk/jump state
+  color:         number
+  alive:         boolean
+  walkPhase:     number
+  lastFootstepX: number
+  velocityY:     number
+  onGround:      boolean
 }
 
 interface Bubble { gfx: PIXI.Container; ttl: number; node: PlayerNode }
@@ -70,6 +81,8 @@ export class PixiScene {
   private statusGfx:    PIXI.Graphics
   private screenGfx:    PIXI.Graphics
   private dangerGfx:    PIXI.Graphics
+  private footprintGfx: PIXI.Graphics
+  private footprints:   Footprint[] = []
   private bubbleContainer: PIXI.Container
   private bubbles:      Bubble[] = []
 
@@ -89,19 +102,24 @@ export class PixiScene {
   private W: number; private H: number
   private localPlayerId: string | null = null
   private keys = new Set<string>()
+  private jumpQueued = false
 
   private hoveredPlayerId: string | null = null
   private onAgentClick: ((playerId: string) => void) | null = null
 
   private readonly onKD = (e: KeyboardEvent) => {
-    const k = e.key.toLowerCase()
-    if (!['w','a','s','d'].includes(k)) return
+    const k = e.key === ' ' ? 'space' : e.key.toLowerCase()
+    if (!['w','a','s','d','space'].includes(k)) return
     const active = document.activeElement
     if (active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement || active instanceof HTMLSelectElement) return
     e.preventDefault()
+    if (k === 'space' && !this.keys.has('space')) this.jumpQueued = true
     this.keys.add(k)
   }
-  private readonly onKU = (e: KeyboardEvent) => { this.keys.delete(e.key.toLowerCase()) }
+  private readonly onKU = (e: KeyboardEvent) => {
+    const k = e.key === ' ' ? 'space' : e.key.toLowerCase()
+    this.keys.delete(k)
+  }
 
   constructor(canvas: HTMLCanvasElement, onAgentClick?: (id: string) => void) {
     this.W = window.innerWidth
@@ -122,6 +140,7 @@ export class PixiScene {
     this.statusGfx       = new PIXI.Graphics()
     this.screenGfx       = new PIXI.Graphics()
     this.dangerGfx       = new PIXI.Graphics()
+    this.footprintGfx    = new PIXI.Graphics()
     this.bubbleContainer = new PIXI.Container()
     this.stars           = []
     this.playerNodes     = []
@@ -154,6 +173,7 @@ export class PixiScene {
     this.buildShipExterior()
     this.buildShipInterior()
     this.world.addChild(this.engineGfx)
+    this.world.addChild(this.footprintGfx)
     this.buildPlayerNodes()
     this.world.addChild(this.statusGfx)
     this.world.addChild(this.screenGfx)
@@ -177,6 +197,8 @@ export class PixiScene {
     if (node) {
       node.gfx.x = (this.crewLeft + this.crewRight) / 2
       node.gfx.y = this.crewBottom
+      node.velocityY = 0
+      node.onGround  = true
     }
   }
 
@@ -229,11 +251,9 @@ export class PixiScene {
     const { H } = this
     const g = new PIXI.Graphics()
     const gs = 16
-    // minor lines
     g.lineStyle(1, 0x1a3a6a, 0.10)
     for (let x = 0; x <= WORLD_W; x += gs)   { g.moveTo(x,0); g.lineTo(x,H) }
     for (let y = 0; y <= H; y += gs)          { g.moveTo(0,y); g.lineTo(WORLD_W,y) }
-    // major lines every 8 tiles (128px)
     g.lineStyle(1, 0x2a5aaa, 0.18)
     for (let x = 0; x <= WORLD_W; x += gs*8) { g.moveTo(x,0); g.lineTo(x,H) }
     for (let y = 0; y <= H; y += gs*8)        { g.moveTo(0,y); g.lineTo(WORLD_W,y) }
@@ -341,7 +361,6 @@ export class PixiScene {
       const bx = crewLeft + t * crewW
       const by = crewBottom
 
-      // Outline for hover highlight
       const outline = new PIXI.Graphics()
       outline.x = bx; outline.y = by
       outline.visible = false
@@ -351,7 +370,7 @@ export class PixiScene {
       gfx.x = bx; gfx.y = by
       gfx.interactive = true
       gfx.cursor = 'pointer'
-      this.drawCrew(gfx, CREW_COLORS[i % CREW_COLORS.length], true, false, false)
+      this.drawCrew(gfx, CREW_COLORS[i % CREW_COLORS.length], true, false, false, 0)
       container.addChild(gfx)
 
       const label = new PIXI.Text('CREW', {
@@ -361,7 +380,7 @@ export class PixiScene {
         align: 'center',
       })
       label.anchor.set(0.5, 1)
-      label.x = bx; label.y = by - 22
+      label.x = bx; label.y = by - 55
       container.addChild(label)
 
       const node: PlayerNode = {
@@ -372,10 +391,15 @@ export class PixiScene {
         playerId: `slot_${i}`,
         isAI: true,
         wanderTimer: Math.random() * 3,
+        color: CREW_COLORS[i % CREW_COLORS.length],
+        alive: true,
+        walkPhase: 0,
+        lastFootstepX: bx,
+        velocityY: 0,
+        onGround: true,
       }
       this.playerNodes.push(node)
 
-      // Hover
       gfx.on('pointerover', () => {
         this.hoveredPlayerId = node.playerId
         outline.visible = true
@@ -387,7 +411,6 @@ export class PixiScene {
         outline.visible = false
         label.style.fontSize = 6
       })
-      // Click
       gfx.on('pointertap', () => {
         if (node.playerId && !node.playerId.startsWith('slot_') && this.onAgentClick) {
           this.onAgentClick(node.playerId)
@@ -404,10 +427,10 @@ export class PixiScene {
     return (r << 16) | (g << 8) | b
   }
 
-  private drawCrew(g: PIXI.Graphics, color: number, alive: boolean, isAi: boolean, isLocal: boolean) {
+  // legPhase: 0 = idle, 0-1 cycling = walk animation
+  private drawCrew(g: PIXI.Graphics, color: number, alive: boolean, isAi: boolean, isLocal: boolean, legPhase = 0) {
     g.clear()
     if (!alive) {
-      // Ghost/skull — faded X mark
       g.lineStyle(2, 0x334455, 0.7)
       g.moveTo(-8,-20); g.lineTo(8,8)
       g.moveTo(8,-20);  g.lineTo(-8,8)
@@ -417,12 +440,18 @@ export class PixiScene {
       return
     }
 
-    const hi  = this.shade(color, 1.45)   // highlight
-    const mid = color                      // base
-    const dk  = this.shade(color, 0.55)   // shadow
-    const dkk = this.shade(color, 0.30)   // deep shadow
+    const hi  = this.shade(color, 1.45)
+    const mid = color
+    const dk  = this.shade(color, 0.55)
+    const dkk = this.shade(color, 0.30)
 
-    // AI antenna (3-pixel wide pixel rod + round tip)
+    // Walk animation: legs swing alternately
+    const lLeg = legPhase > 0 ? Math.sin(legPhase * Math.PI * 2) * 5 : 0
+    const rLeg = legPhase > 0 ? Math.sin(legPhase * Math.PI * 2 + Math.PI) * 5 : 0
+    const lArm = legPhase > 0 ? Math.sin(legPhase * Math.PI * 2 + Math.PI) * 3 : 0
+    const rArm = legPhase > 0 ? Math.sin(legPhase * Math.PI * 2) * 3 : 0
+
+    // AI antenna
     if (isAi) {
       g.beginFill(dkk);    g.drawRect(-1,-38,3,12); g.endFill()
       g.beginFill(0xff3333);g.drawRect(-2,-40,5,4); g.endFill()
@@ -430,73 +459,60 @@ export class PixiScene {
     }
 
     // ── Helmet ──────────────────────────────────────────────────────────
-    // top highlight strip
     g.beginFill(hi);  g.drawRect(-6,-28,12,2); g.endFill()
-    // main helmet shell
     g.beginFill(mid); g.drawRect(-6,-26,12,10); g.endFill()
-    // left/right edge shading
     g.beginFill(dk);  g.drawRect(-6,-26,2,10); g.endFill()
     g.beginFill(dkk); g.drawRect(4,-26,2,10);  g.endFill()
-    // bottom edge shadow
     g.beginFill(dkk); g.drawRect(-6,-17,12,1); g.endFill()
 
     // ── Visor ────────────────────────────────────────────────────────────
     const visorBase = isAi ? 0xcc0000 : 0x003355
     const visorHi   = isAi ? 0xff6644 : 0x0088cc
     g.beginFill(visorBase);         g.drawRect(-4,-24,8,6);  g.endFill()
-    g.beginFill(visorHi, 0.6);      g.drawRect(-4,-24,8,2);  g.endFill()   // visor shine
-    g.beginFill(0xffffff, 0.18);    g.drawRect(-4,-24,3,2);  g.endFill()   // glint
+    g.beginFill(visorHi, 0.6);      g.drawRect(-4,-24,8,2);  g.endFill()
+    g.beginFill(0xffffff, 0.18);    g.drawRect(-4,-24,3,2);  g.endFill()
 
     // ── Neck connector ───────────────────────────────────────────────────
     g.beginFill(dk);  g.drawRect(-3,-16,6,3); g.endFill()
 
     // ── Torso ────────────────────────────────────────────────────────────
-    g.beginFill(hi);  g.drawRect(-7,-13,14,2);  g.endFill()   // shoulder highlight
-    g.beginFill(mid); g.drawRect(-7,-11,14,18); g.endFill()   // main body
-    g.beginFill(dk);  g.drawRect(-7,-11,2,18);  g.endFill()   // left edge shadow
-    g.beginFill(dkk); g.drawRect(5,-11,2,18);   g.endFill()   // right edge shadow
-    g.beginFill(dkk); g.drawRect(-7,6,14,2);    g.endFill()   // bottom shadow
+    g.beginFill(hi);  g.drawRect(-7,-13,14,2);  g.endFill()
+    g.beginFill(mid); g.drawRect(-7,-11,14,18); g.endFill()
+    g.beginFill(dk);  g.drawRect(-7,-11,2,18);  g.endFill()
+    g.beginFill(dkk); g.drawRect(5,-11,2,18);   g.endFill()
+    g.beginFill(dkk); g.drawRect(-7,6,14,2);    g.endFill()
 
-    // Chest panel detail
     g.beginFill(dkk);         g.drawRect(-3,-9,8,8);  g.endFill()
     g.beginFill(0x000a18,0.8);g.drawRect(-2,-8,6,6);  g.endFill()
-    // indicator lights
     g.beginFill(isAi ? 0xff2200 : 0x00ff88); g.drawRect(-1,-7,2,2); g.endFill()
     g.beginFill(isAi ? 0xff8800 : 0x00aaff); g.drawRect(2,-7,2,2);  g.endFill()
     g.beginFill(isAi ? 0xffcc00 : 0xffffff,0.4); g.drawRect(-1,-4,5,1); g.endFill()
 
-    // ── Arms ─────────────────────────────────────────────────────────────
-    // left arm
-    g.beginFill(hi);  g.drawRect(-12,-11,5,2);  g.endFill()
-    g.beginFill(mid); g.drawRect(-12,-9,5,12);  g.endFill()
-    g.beginFill(dkk); g.drawRect(-12,-9,1,12);  g.endFill()
-    g.beginFill(dk);  g.drawRect(-12,2,5,2);    g.endFill()
-    // right arm
-    g.beginFill(hi);  g.drawRect(7,-11,5,2);    g.endFill()
-    g.beginFill(mid); g.drawRect(7,-9,5,12);    g.endFill()
-    g.beginFill(dkk); g.drawRect(11,-9,1,12);   g.endFill()
-    g.beginFill(dk);  g.drawRect(7,2,5,2);      g.endFill()
+    // ── Arms (swing with walk) ────────────────────────────────────────────
+    g.beginFill(hi);  g.drawRect(-12,-11+lArm,5,2);  g.endFill()
+    g.beginFill(mid); g.drawRect(-12,-9+lArm,5,12);  g.endFill()
+    g.beginFill(dkk); g.drawRect(-12,-9+lArm,1,12);  g.endFill()
+    g.beginFill(dk);  g.drawRect(-12,2+lArm,5,2);    g.endFill()
+    g.beginFill(hi);  g.drawRect(7,-11+rArm,5,2);    g.endFill()
+    g.beginFill(mid); g.drawRect(7,-9+rArm,5,12);    g.endFill()
+    g.beginFill(dkk); g.drawRect(11,-9+rArm,1,12);   g.endFill()
+    g.beginFill(dk);  g.drawRect(7,2+rArm,5,2);      g.endFill()
 
-    // ── Legs ─────────────────────────────────────────────────────────────
-    // left leg
-    g.beginFill(mid); g.drawRect(-7,8,6,10);  g.endFill()
-    g.beginFill(dkk); g.drawRect(-7,8,1,10);  g.endFill()
-    g.beginFill(dk);  g.drawRect(-7,8,6,2);   g.endFill()   // top joint
-    // boot
-    g.beginFill(dk);  g.drawRect(-8,17,7,3);  g.endFill()
-    // right leg
-    g.beginFill(mid); g.drawRect(1,8,6,10);   g.endFill()
-    g.beginFill(dkk); g.drawRect(6,8,1,10);   g.endFill()
-    g.beginFill(dk);  g.drawRect(1,8,6,2);    g.endFill()
-    // boot
-    g.beginFill(dk);  g.drawRect(1,17,7,3);   g.endFill()
+    // ── Legs (swing with walk) ────────────────────────────────────────────
+    g.beginFill(mid); g.drawRect(-7,8+lLeg,6,10);  g.endFill()
+    g.beginFill(dkk); g.drawRect(-7,8+lLeg,1,10);  g.endFill()
+    g.beginFill(dk);  g.drawRect(-7,8+lLeg,6,2);   g.endFill()
+    g.beginFill(dk);  g.drawRect(-8,17+lLeg,7,3);  g.endFill()
+    g.beginFill(mid); g.drawRect(1,8+rLeg,6,10);   g.endFill()
+    g.beginFill(dkk); g.drawRect(6,8+rLeg,1,10);   g.endFill()
+    g.beginFill(dk);  g.drawRect(1,8+rLeg,6,2);    g.endFill()
+    g.beginFill(dk);  g.drawRect(1,17+rLeg,7,3);   g.endFill()
 
     // ── Local player marker ──────────────────────────────────────────────
     if (isLocal) {
       g.lineStyle(1, color, 0.9)
       g.drawRect(-14,-30,28,52)
       g.lineStyle(0)
-      // diamond marker above
       g.beginFill(color);    g.drawRect(-1,-34,2,2); g.endFill()
       g.beginFill(hi, 0.8);  g.drawRect(0,-35,1,1);  g.endFill()
     }
@@ -518,12 +534,13 @@ export class PixiScene {
       if (!node) return
       node.playerId = p.id
       node.isAI     = p.type === 'ai'
+      node.color    = CREW_COLORS[i % CREW_COLORS.length]
+      node.alive    = p.alive
       const isLocal = p.id === this.localPlayerId
-      const color   = CREW_COLORS[i % CREW_COLORS.length]
-      this.drawCrew(node.gfx, color, p.alive, p.type === 'ai', isLocal)
+      this.drawCrew(node.gfx, node.color, p.alive, p.type === 'ai', isLocal, node.walkPhase)
       node.label.text = (isLocal ? '> ' : '') + p.name.slice(0, 7).toUpperCase()
-      node.label.style.fill = !p.alive ? 0x444455 : isLocal ? 0xffffff : color
-      this.drawOutline(node.outline, color)
+      node.label.style.fill = !p.alive ? 0x444455 : isLocal ? 0xffffff : node.color
+      this.drawOutline(node.outline, node.color)
     })
   }
 
@@ -547,21 +564,71 @@ export class PixiScene {
       if (g.x < -4) { g.x = W + Math.random() * 80; g.y = Math.random() * H }
     }
 
-    // Local player WASD
+    // Local player — A/D horizontal + Space jump, gravity
     const localNode = this.getLocalNode()
     const isObserver = this.localPlayerId === '__observer__'
     if (localNode && !isObserver) {
       const dx = (this.keys.has('d') ? 1 : 0) - (this.keys.has('a') ? 1 : 0)
-      const dy = (this.keys.has('s') ? 1 : 0) - (this.keys.has('w') ? 1 : 0)
-      localNode.gfx.x = Math.max(this.crewLeft,  Math.min(this.crewRight,  localNode.gfx.x + dx * SPEED * dt_s))
-      localNode.gfx.y = Math.max(this.crewTop,    Math.min(this.crewBottom, localNode.gfx.y + dy * SPEED * dt_s * 0.5))
+
+      // Horizontal movement
+      localNode.gfx.x = Math.max(this.crewLeft, Math.min(this.crewRight, localNode.gfx.x + dx * SPEED * dt_s))
+
+      // Face direction of movement
+      if (dx > 0) localNode.gfx.scale.x = 1
+      else if (dx < 0) localNode.gfx.scale.x = -1
+
+      // Jump (only when grounded)
+      if (this.jumpQueued && localNode.onGround) {
+        localNode.velocityY = JUMP_VEL
+        localNode.onGround  = false
+      }
+
+      // Gravity
+      localNode.velocityY += GRAVITY * dt_s
+
+      // Apply vertical velocity
+      localNode.gfx.y += localNode.velocityY * dt_s
+
+      // Ceiling clamp
+      if (localNode.gfx.y < this.crewTop) {
+        localNode.gfx.y  = this.crewTop
+        localNode.velocityY = 0
+      }
+      // Floor clamp
+      if (localNode.gfx.y >= this.crewBottom) {
+        localNode.gfx.y  = this.crewBottom
+        localNode.velocityY = 0
+        localNode.onGround  = true
+      }
+
+      // Walk animation
+      if (Math.abs(dx) > 0.1) {
+        localNode.walkPhase = (localNode.walkPhase + dt_s * 5) % 1
+      } else {
+        localNode.walkPhase *= 0.7
+        if (localNode.walkPhase < 0.01) localNode.walkPhase = 0
+      }
+
+      // Redraw local player with current walk phase
+      this.drawCrew(localNode.gfx, localNode.color, localNode.alive, localNode.isAI, true, localNode.walkPhase)
+
       localNode.label.x = localNode.gfx.x
-      localNode.label.y = localNode.gfx.y - 22
+      localNode.label.y = localNode.gfx.y - 55
+      localNode.outline.x = localNode.gfx.x
+      localNode.outline.y = localNode.gfx.y
+
+      // Footprints when walking on ground
+      if (localNode.onGround && Math.abs(dx) > 0.1) {
+        if (Math.abs(localNode.gfx.x - localNode.lastFootstepX) > 22) {
+          this.footprints.push({ x: localNode.gfx.x, floorY: this.crewBottom, alpha: 0.85 })
+          localNode.lastFootstepX = localNode.gfx.x
+        }
+      }
     }
+    this.jumpQueued = false
 
     // Camera
     if (isObserver) {
-      // Freecam: WASD pans the world freely
       const cdx = (this.keys.has('d') ? 1 : 0) - (this.keys.has('a') ? 1 : 0)
       const cdy = (this.keys.has('s') ? 1 : 0) - (this.keys.has('w') ? 1 : 0)
       this.world.x = Math.max(this.W - WORLD_W - 300, Math.min(300, this.world.x - cdx * SPEED * dt_s))
@@ -572,15 +639,14 @@ export class PixiScene {
       this.world.x += (clamped - this.world.x) * 0.12
     }
 
-    // AI procedural wandering
-    this.playerNodes.forEach((node, i) => {
+    // AI procedural wandering with walk animation
+    this.playerNodes.forEach((node) => {
       const isLocal = !isObserver && this.localPlayerId
         ? node.playerId === this.localPlayerId
         : false
       if (isLocal) return
       if (!node.isAI) return
 
-      // Wander: pick new target periodically
       node.wanderTimer -= dt_s
       if (node.wanderTimer <= 0) {
         const margin = 40
@@ -589,20 +655,53 @@ export class PixiScene {
         node.wanderTimer = 2 + Math.random() * 4
       }
 
-      // Move toward target with idle bob
-      const dx = node.targetX - node.gfx.x
-      const dy = node.targetY - node.gfx.y
-      node.gfx.x += dx * dt_s * 0.8
-      node.gfx.y += dy * dt_s * 0.8 + Math.sin(t * 0.9 + node.idlePhase) * 0.4
+      const dxAI = node.targetX - node.gfx.x
+      const dyAI = node.targetY - node.gfx.y
+      const moving = Math.abs(dxAI) > 6
+
+      if (moving) {
+        node.gfx.x += dxAI * dt_s * 0.8
+        node.gfx.y += dyAI * dt_s * 0.8
+        node.walkPhase = (node.walkPhase + dt_s * 4) % 1
+        node.gfx.scale.x = dxAI > 0 ? 1 : -1
+        // Footprints for AI
+        if (Math.abs(node.gfx.x - node.lastFootstepX) > 24) {
+          this.footprints.push({ x: node.gfx.x, floorY: this.crewBottom, alpha: 0.55 })
+          node.lastFootstepX = node.gfx.x
+        }
+      } else {
+        // Idle bob
+        node.gfx.y += dyAI * dt_s * 0.8 + Math.sin(t * 0.9 + node.idlePhase) * 0.4
+        node.walkPhase *= 0.8
+        if (node.walkPhase < 0.01) node.walkPhase = 0
+      }
 
       node.gfx.x = Math.max(this.crewLeft,  Math.min(this.crewRight,  node.gfx.x))
       node.gfx.y = Math.max(this.crewTop,    Math.min(this.crewBottom, node.gfx.y))
 
+      // Redraw AI with walk animation
+      this.drawCrew(node.gfx, node.color, node.alive, node.isAI, false, node.walkPhase)
+
       node.label.x = node.gfx.x
-      node.label.y = node.gfx.y - 22
+      node.label.y = node.gfx.y - 55
       node.outline.x = node.gfx.x
       node.outline.y = node.gfx.y
     })
+
+    // Footprints — fade and draw
+    this.footprintGfx.clear()
+    for (let i = this.footprints.length - 1; i >= 0; i--) {
+      const fp = this.footprints[i]
+      fp.alpha -= dt_s * 0.4
+      if (fp.alpha <= 0) { this.footprints.splice(i, 1); continue }
+      // Left and right boot marks, slightly offset
+      this.footprintGfx.beginFill(0x2a4a6a, fp.alpha)
+      this.footprintGfx.drawRect(fp.x - 6, fp.floorY - 1, 5, 2)
+      this.footprintGfx.endFill()
+      this.footprintGfx.beginFill(0x2a4a6a, fp.alpha)
+      this.footprintGfx.drawRect(fp.x,     fp.floorY - 1, 5, 2)
+      this.footprintGfx.endFill()
+    }
 
     // Engine
     const { engCoreX, engCoreY, engCoreH, nozzleY1, nozzleY2, sx } = this
@@ -677,7 +776,7 @@ export class PixiScene {
       this.dangerGfx.lineStyle(0)
     }
 
-    // Speech bubbles
+    // Speech bubbles — track above nametag
     for (let i=this.bubbles.length-1; i>=0; i--) {
       const b = this.bubbles[i]
       b.ttl -= dt_s
@@ -688,7 +787,7 @@ export class PixiScene {
       } else {
         b.gfx.alpha = Math.min(1, b.ttl)
         b.gfx.x = b.node.gfx.x
-        b.gfx.y = b.node.gfx.y - 24
+        b.gfx.y = b.node.gfx.y - 60
       }
     }
   }
@@ -717,7 +816,7 @@ export class PixiScene {
 
     const container = new PIXI.Container()
     container.addChild(g); container.addChild(label)
-    container.x = node.gfx.x; container.y = node.gfx.y - 24
+    container.x = node.gfx.x; container.y = node.gfx.y - 60
 
     this.bubbleContainer.addChild(container)
     this.bubbles.push({ gfx: container, ttl: 4.5, node })

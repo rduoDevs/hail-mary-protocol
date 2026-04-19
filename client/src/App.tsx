@@ -91,8 +91,8 @@ export default function App() {
         </>
       )}
 
-      {/* Agent popup dashboard (both modes) */}
-      <AgentPopupDashboard />
+      {/* Agent popup dashboard — observer mode only */}
+      {isObserver && <AgentPopupDashboard />}
     </div>
   )
 }

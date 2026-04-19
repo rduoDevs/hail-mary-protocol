@@ -16,9 +16,10 @@ export default function PixiSceneCanvas() {
     if (!canvas) return
     if (sceneRef.current) return
 
-    const scene = new PixiScene(canvas, (playerId) => {
+    const { isObserver } = useGameStore.getState()
+    const scene = new PixiScene(canvas, isObserver ? (playerId) => {
       setSelectedId(playerId)
-    })
+    } : undefined)
     sceneRef.current = scene
 
     const onResize = () => scene.resize(window.innerWidth, window.innerHeight)

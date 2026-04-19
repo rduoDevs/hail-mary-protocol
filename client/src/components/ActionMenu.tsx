@@ -52,7 +52,7 @@ export default function ActionMenu() {
 
   return (
     <div style={{
-      position: 'absolute', bottom: 90, right: 10,
+      position: 'absolute', bottom: 112, right: 10,
       background: 'rgba(4,4,16,0.96)', border: `2px solid ${borderColor}`,
       padding: '10px 14px', fontFamily: FONT, backgroundImage: SCAN,
       minWidth: 240, zIndex: 10,
