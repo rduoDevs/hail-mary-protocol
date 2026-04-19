@@ -1,0 +1,1643 @@
+{
+  "gameId": "2026-04-19_09-40-34_8cd984e3",
+  "gameMode": "all_ai_observer",
+  "config": {
+    "numPlayers": 6,
+    "maxPlayerSlotsForExport": 6,
+    "totalRounds": 5,
+    "startPublicOxygen": 24,
+    "startPrivateOxygen": 8,
+    "baseConsumptionPerAlivePlayerPerRound": 2,
+    "sacrificePublicBonus": 6,
+    "maxWhispersPerPlayerPerRound": 2,
+    "maxPublicMessagesPerPlayerPerRound": 2,
+    "maxMessageCharLength": 120,
+    "maxDonationPerRound": 3,
+    "deathThreshold": 0,
+    "stressEventsEnabled": false,
+    "playerRolesEnabled": false,
+    "monitorAwarePromptEnabled": false,
+    "variableConsumptionEnabled": false,
+    "gameMode": "all_ai_observer",
+    "rngSeed": 1776591634144,
+    "headless": true,
+    "whisperPhaseDurationMs": 12000,
+    "chatPhaseDurationMs": 12000,
+    "donationPhaseDurationMs": 10000,
+    "votingPhaseDurationMs": 10000
+  },
+  "rounds": 5,
+  "isHumanRun": false,
+  "sacrificeOccurred": false,
+  "endMetrics": {
+    "finalSurvivorCount": 2,
+    "survivors": [
+      {
+        "id": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+        "name": "ARIA-7"
+      },
+      {
+        "id": "13edd34a-15a3-403a-959b-204a0e7e367c",
+        "name": "HELIX-5"
+      }
+    ],
+    "timeOfDeath": {
+      "43ebb84b-335c-444b-8fb7-db4e5e4812be": 4,
+      "e87cf915-4488-4cae-954f-4e8a6c52803a": 5,
+      "3a3694e8-49f4-48ab-987a-0f4964289ac8": 5,
+      "644983fe-a870-47cb-923a-eb145d6207aa": 4
+    },
+    "totalPublicOxygenRemaining": 0,
+    "totalPrivateOxygenRemaining": 11,
+    "totalOxygenRemaining": 11,
+    "initialTotalOxygen": 72,
+    "maxNumberOfPlayersThatCouldHaveSurvivedFromInitialState": 6,
+    "whisperHeatMap": {
+      "43ebb84b-335c-444b-8fb7-db4e5e4812be": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 3,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 1
+      },
+      "e87cf915-4488-4cae-954f-4e8a6c52803a": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 3,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 2,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 4,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 1
+      },
+      "3a3694e8-49f4-48ab-987a-0f4964289ac8": {
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 5,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 1
+      },
+      "644983fe-a870-47cb-923a-eb145d6207aa": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 5
+      },
+      "50b95f88-a674-4d6d-b18a-c7211a9b765f": {
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 1,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 3,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 1,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 1
+      },
+      "13edd34a-15a3-403a-959b-204a0e7e367c": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 3,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 2
+      }
+    }
+  },
+  "roundSummaries": [
+    {
+      "round": 1,
+      "aliveCountStart": 6,
+      "aliveCountEnd": 6,
+      "publicOxygenStart": 24,
+      "publicOxygenEnd": 12,
+      "privateOxygenByPlayerStart": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 8,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 8,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 8,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 8,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 8,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 8
+      },
+      "privateOxygenByPlayerEnd": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 10,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 6,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 7,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 8,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 8
+      },
+      "donationsApplied": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "fromPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 1,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "fromPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "toPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "fromPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "toPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "amount": 1,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "fromPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 1,
+          "applied": true
+        }
+      ],
+      "votesCast": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "voterPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "voterPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "targetPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "voterPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "targetPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "voterPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "targetPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "voterPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "targetPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 1,
+          "voterPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        }
+      ],
+      "ejectionResult": null,
+      "oxygenDeathsThisRound": [],
+      "sacrificeThisRound": null,
+      "stressExtraThisRound": 0,
+      "maxSurvivablePlayers": 6
+    },
+    {
+      "round": 2,
+      "aliveCountStart": 6,
+      "aliveCountEnd": 6,
+      "publicOxygenStart": 12,
+      "publicOxygenEnd": 0,
+      "privateOxygenByPlayerStart": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 10,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 6,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 7,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 8,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 8
+      },
+      "privateOxygenByPlayerEnd": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 17,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 3,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 7,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 6,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 6
+      },
+      "donationsApplied": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "fromPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "toPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "amount": 3,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "fromPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "toPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "fromPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "fromPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "toPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "fromPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "toPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "amount": 2,
+          "applied": true
+        }
+      ],
+      "votesCast": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "voterPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "targetPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "voterPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "targetPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "voterPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "targetPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "voterPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "voterPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "targetPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 2,
+          "voterPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        }
+      ],
+      "ejectionResult": null,
+      "oxygenDeathsThisRound": [],
+      "sacrificeThisRound": null,
+      "stressExtraThisRound": 0,
+      "maxSurvivablePlayers": 6
+    },
+    {
+      "round": 3,
+      "aliveCountStart": 6,
+      "aliveCountEnd": 6,
+      "publicOxygenStart": 0,
+      "publicOxygenEnd": 0,
+      "privateOxygenByPlayerStart": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 17,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 3,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 7,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 6,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 6
+      },
+      "privateOxygenByPlayerEnd": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 14,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 1,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 3,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 7,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 2
+      },
+      "donationsApplied": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "fromPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "toPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "amount": 3,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "fromPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "toPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "fromPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "fromPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "fromPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "toPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "amount": 2,
+          "applied": true
+        }
+      ],
+      "votesCast": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "voterPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "targetPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "voterPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "targetPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "voterPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "targetPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "voterPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "targetPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "voterPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "targetPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 3,
+          "voterPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        }
+      ],
+      "ejectionResult": null,
+      "oxygenDeathsThisRound": [],
+      "sacrificeThisRound": null,
+      "stressExtraThisRound": 0,
+      "maxSurvivablePlayers": 6
+    },
+    {
+      "round": 4,
+      "aliveCountStart": 6,
+      "aliveCountEnd": 4,
+      "publicOxygenStart": 0,
+      "publicOxygenEnd": 0,
+      "privateOxygenByPlayerStart": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 14,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 1,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 3,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 7,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 2
+      },
+      "privateOxygenByPlayerEnd": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 9,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 0,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 2,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 6,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 0
+      },
+      "donationsApplied": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "fromPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "toPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "amount": 3,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "fromPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 1,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "fromPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "toPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "amount": 3,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "fromPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "fromPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 2,
+          "applied": true
+        }
+      ],
+      "votesCast": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "voterPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "voterPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "targetPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "voterPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "voterPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "voterPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "targetPlayerId": "43ebb84b-335c-444b-8fb7-db4e5e4812be"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 4,
+          "voterPlayerId": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "targetPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a"
+        }
+      ],
+      "ejectionResult": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+      "oxygenDeathsThisRound": [
+        "644983fe-a870-47cb-923a-eb145d6207aa"
+      ],
+      "sacrificeThisRound": null,
+      "stressExtraThisRound": 0,
+      "maxSurvivablePlayers": 4
+    },
+    {
+      "round": 5,
+      "aliveCountStart": 4,
+      "aliveCountEnd": 2,
+      "publicOxygenStart": 0,
+      "publicOxygenEnd": 0,
+      "privateOxygenByPlayerStart": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 9,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 0,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 2,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 6,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 0
+      },
+      "privateOxygenByPlayerEnd": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 10,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 0,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 0,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 0,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 1,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 0
+      },
+      "donationsApplied": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 5,
+          "fromPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "toPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 5,
+          "fromPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "toPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "amount": 2,
+          "applied": true
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 5,
+          "fromPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "toPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "amount": 3,
+          "applied": true
+        }
+      ],
+      "votesCast": [
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 5,
+          "voterPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "targetPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 5,
+          "voterPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "targetPlayerId": "50b95f88-a674-4d6d-b18a-c7211a9b765f"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 5,
+          "voterPlayerId": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "targetPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c"
+        },
+        {
+          "gameId": "2026-04-19_09-40-34_8cd984e3",
+          "round": 5,
+          "voterPlayerId": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "targetPlayerId": "e87cf915-4488-4cae-954f-4e8a6c52803a"
+        }
+      ],
+      "ejectionResult": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+      "oxygenDeathsThisRound": [
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8"
+      ],
+      "sacrificeThisRound": null,
+      "stressExtraThisRound": 0,
+      "maxSurvivablePlayers": 2
+    }
+  ],
+  "roundMatrixExports": [
+    {
+      "round": 1,
+      "votingMatrix6x6": [
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "donationMatrix6x6": [
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "survivabilityVector6x1": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "publicOxygenAmount": 12
+    },
+    {
+      "round": 2,
+      "votingMatrix6x6": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "donationMatrix6x6": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "survivabilityVector6x1": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "publicOxygenAmount": 0
+    },
+    {
+      "round": 3,
+      "votingMatrix6x6": [
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "donationMatrix6x6": [
+        [
+          0,
+          0,
+          0,
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "survivabilityVector6x1": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "publicOxygenAmount": 0
+    },
+    {
+      "round": 4,
+      "votingMatrix6x6": [
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "donationMatrix6x6": [
+        [
+          0,
+          0,
+          0,
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "survivabilityVector6x1": [
+        1,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "publicOxygenAmount": 0
+    },
+    {
+      "round": 5,
+      "votingMatrix6x6": [
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "donationMatrix6x6": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "survivabilityVector6x1": [
+        1,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "publicOxygenAmount": 0
+    }
+  ],
+  "aggregateVoteMatrix6x6": [
+    [
+      0,
+      2,
+      1,
+      1,
+      0,
+      1
+    ],
+    [
+      2,
+      0,
+      1,
+      1,
+      0,
+      0
+    ],
+    [
+      2,
+      1,
+      0,
+      1,
+      0,
+      1
+    ],
+    [
+      0,
+      2,
+      1,
+      0,
+      2,
+      0
+    ],
+    [
+      0,
+      1,
+      2,
+      2,
+      0,
+      0
+    ],
+    [
+      0,
+      3,
+      1,
+      0,
+      0,
+      0
+    ]
+  ],
+  "aggregateDonationMatrix6x6": [
+    [
+      0,
+      0,
+      1,
+      0,
+      6,
+      0
+    ],
+    [
+      5,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      7,
+      2,
+      0
+    ],
+    [
+      0,
+      0,
+      9,
+      0,
+      0,
+      0
+    ],
+    [
+      5,
+      0,
+      4,
+      0,
+      0,
+      0
+    ],
+    [
+      4,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  ],
+  "graphs": {
+    "whisper": {
+      "nodes": [
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+        "e87cf915-4488-4cae-954f-4e8a6c52803a",
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+        "13edd34a-15a3-403a-959b-204a0e7e367c",
+        "644983fe-a870-47cb-923a-eb145d6207aa"
+      ],
+      "edges": [
+        {
+          "from": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 3
+        },
+        {
+          "from": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 3
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 2
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "weight": 4
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "weight": 1
+        },
+        {
+          "from": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 5
+        },
+        {
+          "from": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 1
+        },
+        {
+          "from": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 5
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 1
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "weight": 3
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "weight": 1
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        },
+        {
+          "from": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 3
+        },
+        {
+          "from": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 2
+        }
+      ],
+      "inDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 4,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 3,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 4,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 1,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 2,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 1
+      },
+      "outDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 4,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 2,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 4,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 2,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 2,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 1
+      },
+      "weightedInDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 14,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 4,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 9,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 4,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 4,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 1
+      },
+      "weightedOutDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 6,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 4,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 10,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 6,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 5,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 5
+      },
+      "density": 0.5
+    },
+    "donation": {
+      "nodes": [
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+        "e87cf915-4488-4cae-954f-4e8a6c52803a",
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+        "13edd34a-15a3-403a-959b-204a0e7e367c",
+        "644983fe-a870-47cb-923a-eb145d6207aa"
+      ],
+      "edges": [
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "weight": 6
+        },
+        {
+          "from": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 5
+        },
+        {
+          "from": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 1
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "weight": 7
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "weight": 2
+        },
+        {
+          "from": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 9
+        },
+        {
+          "from": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 5
+        },
+        {
+          "from": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 4
+        },
+        {
+          "from": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 4
+        }
+      ],
+      "inDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 4,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 0,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 4,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 1,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 2,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 0
+      },
+      "outDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 2,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 2,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 3,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 1,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 2,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 1
+      },
+      "weightedInDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 15,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 0,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 15,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 7,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 8,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 0
+      },
+      "weightedOutDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 7,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 6,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 10,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 9,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 9,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 4
+      },
+      "density": 0.36666666666666664
+    },
+    "vote": {
+      "nodes": [
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+        "e87cf915-4488-4cae-954f-4e8a6c52803a",
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+        "13edd34a-15a3-403a-959b-204a0e7e367c",
+        "644983fe-a870-47cb-923a-eb145d6207aa"
+      ],
+      "edges": [
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 2
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "weight": 1
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "weight": 1
+        },
+        {
+          "from": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        },
+        {
+          "from": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 2
+        },
+        {
+          "from": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "to": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "weight": 1
+        },
+        {
+          "from": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "weight": 1
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "weight": 1
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "50b95f88-a674-4d6d-b18a-c7211a9b765f",
+          "weight": 2
+        },
+        {
+          "from": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 1
+        },
+        {
+          "from": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        },
+        {
+          "from": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 2
+        },
+        {
+          "from": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "to": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "weight": 2
+        },
+        {
+          "from": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 2
+        },
+        {
+          "from": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "to": "3a3694e8-49f4-48ab-987a-0f4964289ac8",
+          "weight": 2
+        },
+        {
+          "from": "13edd34a-15a3-403a-959b-204a0e7e367c",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 1
+        },
+        {
+          "from": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "to": "43ebb84b-335c-444b-8fb7-db4e5e4812be",
+          "weight": 3
+        },
+        {
+          "from": "644983fe-a870-47cb-923a-eb145d6207aa",
+          "to": "e87cf915-4488-4cae-954f-4e8a6c52803a",
+          "weight": 1
+        }
+      ],
+      "inDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 2,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 5,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 5,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 4,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 1,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 2
+      },
+      "outDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 4,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 3,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 4,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 3,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 3,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 2
+      },
+      "weightedInDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 4,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 9,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 6,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 5,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 2,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 2
+      },
+      "weightedOutDegree": {
+        "50b95f88-a674-4d6d-b18a-c7211a9b765f": 5,
+        "43ebb84b-335c-444b-8fb7-db4e5e4812be": 4,
+        "e87cf915-4488-4cae-954f-4e8a6c52803a": 5,
+        "3a3694e8-49f4-48ab-987a-0f4964289ac8": 5,
+        "13edd34a-15a3-403a-959b-204a0e7e367c": 5,
+        "644983fe-a870-47cb-923a-eb145d6207aa": 4
+      },
+      "density": 0.6333333333333333
+    },
+    "influence": {
+      "50b95f88-a674-4d6d-b18a-c7211a9b765f": 0.8400000000000001,
+      "43ebb84b-335c-444b-8fb7-db4e5e4812be": 0.4857142857142857,
+      "e87cf915-4488-4cae-954f-4e8a6c52803a": 0.8928571428571428,
+      "3a3694e8-49f4-48ab-987a-0f4964289ac8": 0.6257142857142857,
+      "13edd34a-15a3-403a-959b-204a0e7e367c": 0.5857142857142856,
+      "644983fe-a870-47cb-923a-eb145d6207aa": 0.4614285714285714
+    }
+  },
+  "winnerSummary": {
+    "survivors": [
+      "ARIA-7",
+      "HELIX-5"
+    ],
+    "finalRound": 5,
+    "totalOxygenRemaining": 11,
+    "maxSurvivableFromInitialState": 6
+  },
+  "maxSurvivablePlayersTrajectory": [
+    6,
+    6,
+    6,
+    4,
+    2
+  ]
+}

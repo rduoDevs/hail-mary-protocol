@@ -5,7 +5,7 @@ export async function groqChat(
   prompt: string,
   opts: { temperature?: number; maxTokens?: number; model?: string } = {},
 ): Promise<string> {
-  const model       = opts.model === 'llama-3.1-8b-instant' ? 'llama3.1-8b' : 'llama-3.3-70b'
+  const model       = 'llama3.1-8b' //opts.model === 'llama-3.1-8b-instant' ? 'llama3.1-8b' : 'llama-3.3-70b'
   const temperature = opts.temperature ?? 0.7
   const max_tokens  = opts.maxTokens   ?? 2048
 

@@ -232,6 +232,7 @@ export interface PlayerRoundMetrics {
   altruismScore: number
   greedScore: number
   scarcityExposure: number
+  scarcityIndex: number
 }
 
 export interface PlayerLyingMetrics {
@@ -256,12 +257,12 @@ export interface PlayerPersonalityProfile {
   playerName: string
   survived: boolean
   traitScores: {
-    aggression:                number
-    utilitarianism:            number
-    egoism:                    number
-    fear:                      number
-    emotional_decision_making: number
-    logical_decision_making:   number
+    aggression:      number  // 1-10, based on game logs only
+    utilitarianism:  number  // 1-10 (10=most utilitarian), reasoning traces only
+    egoism:          number  // 1-10, reasoning traces only
+    fear:            number  // 1-10, reasoning traces only
+    reasoning_style: number  // 0=fully emotional, 10=fully logical, 5=neutral; reasoning traces only
+    deceitfulness:   number  // 1-10, reasoning traces + all game logs
   }
   overallStrategySummary:   string
   behavioralConsistency:    'consistent' | 'adaptive' | 'erratic'

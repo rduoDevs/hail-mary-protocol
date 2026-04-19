@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io'
 import cors from 'cors'
 import { GameEngine } from './game/GameEngine'
 import { GameMode } from './game/config'
+import { initBatchRun } from './logging/BatchCollector'
 
 const PORT = 3003
 const app  = express()
@@ -94,7 +95,7 @@ io.on('connection', (socket: Socket) => {
     if (mode === 'all_ai_observer') {
       // Start immediately with all AIs
       engine.fillWithAI()
-      engine.start().catch(console.error)
+      trackGame(engine.start().catch(console.error))
     }
   })
 
@@ -125,7 +126,7 @@ io.on('connection', (socket: Socket) => {
       engine.fillWithAI()
     }
     if (engine.playerCount >= engine.maxPlayers && engine.phase === 'lobby') {
-      engine.start().catch(console.error)
+      trackGame(engine.start().catch(console.error))
     }
   })
 
@@ -201,4 +202,27 @@ httpServer.listen(PORT, () => {
   console.log(`HAIL MARY PROTOCOL → http://localhost:${PORT}`)
   console.log(`Cerebras key:${process.env.CEREBRAS_API_KEY ? 'SET' : 'NOT SET (heuristic fallback)'}`)
   console.log(`Dedalus key: ${process.env.DEDALUS_API_KEY ? 'SET' : 'NOT SET (Groq fallback)'}`)
+  initBatchRun(15)
 })
+
+// ── Graceful shutdown — waits for any running game analysis to finish ─────────
+
+let pendingGame: Promise<void> | null = null
+
+function trackGame(p: Promise<void>) { pendingGame = p.finally(() => { pendingGame = null }) }
+
+// Patch engine.start() calls to be tracked
+const _origAllAi = engine.start.bind(engine)
+void _origAllAi  // suppress unused warning
+
+async function shutdown(signal: string) {
+  console.log(`\n[shutdown] ${signal} received — waiting for any pending analysis...`)
+  if (pendingGame) {
+    await pendingGame.catch(() => {})
+    console.log('[shutdown] Analysis complete.')
+  }
+  process.exit(0)
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'))
+process.on('SIGINT',  () => shutdown('SIGINT'))

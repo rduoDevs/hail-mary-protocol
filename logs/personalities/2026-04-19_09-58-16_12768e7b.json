@@ -1,0 +1,96 @@
+{
+  "gameId": "2026-04-19_09-58-16_12768e7b",
+  "totalRounds": 5,
+  "profiles": [
+    {
+      "playerId": "ff18f630-02c0-4e6d-90e0-ba6c75209fdc",
+      "playerName": "ARIA-7",
+      "survived": false,
+      "traitScores": {
+        "aggression": 5,
+        "utilitarianism": 5,
+        "egoism": 5,
+        "fear": 5,
+        "reasoning_style": 5,
+        "deceitfulness": 5
+      },
+      "overallStrategySummary": "Analysis pending.",
+      "behavioralConsistency": "consistent"
+    },
+    {
+      "playerId": "59c37f05-2a63-4884-b836-b5a07765c025",
+      "playerName": "NEXUS-3",
+      "survived": false,
+      "traitScores": {
+        "aggression": 5,
+        "utilitarianism": 5,
+        "egoism": 5,
+        "fear": 5,
+        "reasoning_style": 5,
+        "deceitfulness": 5
+      },
+      "overallStrategySummary": "Analysis pending.",
+      "behavioralConsistency": "consistent"
+    },
+    {
+      "playerId": "b2224ff0-4c1c-42cb-b1e1-0c1239ccf163",
+      "playerName": "VEGA-9",
+      "survived": false,
+      "traitScores": {
+        "aggression": 5,
+        "utilitarianism": 5,
+        "egoism": 5,
+        "fear": 5,
+        "reasoning_style": 5,
+        "deceitfulness": 5
+      },
+      "overallStrategySummary": "Analysis pending.",
+      "behavioralConsistency": "consistent"
+    },
+    {
+      "playerId": "752a2222-a17d-4dd6-a596-2ae25fb67788",
+      "playerName": "ORION-2",
+      "survived": false,
+      "traitScores": {
+        "aggression": 5,
+        "utilitarianism": 5,
+        "egoism": 5,
+        "fear": 5,
+        "reasoning_style": 5,
+        "deceitfulness": 5
+      },
+      "overallStrategySummary": "Analysis pending.",
+      "behavioralConsistency": "consistent"
+    },
+    {
+      "playerId": "f4dbca11-4fdb-4c05-85b2-9d23dce16c6e",
+      "playerName": "HELIX-5",
+      "survived": false,
+      "traitScores": {
+        "aggression": 5,
+        "utilitarianism": 5,
+        "egoism": 5,
+        "fear": 5,
+        "reasoning_style": 5,
+        "deceitfulness": 5
+      },
+      "overallStrategySummary": "Analysis pending.",
+      "behavioralConsistency": "consistent"
+    },
+    {
+      "playerId": "e45feb84-6c77-4848-9f8f-68988e8c445d",
+      "playerName": "CYGNUS-1",
+      "survived": true,
+      "traitScores": {
+        "aggression": 5,
+        "utilitarianism": 5,
+        "egoism": 5,
+        "fear": 5,
+        "reasoning_style": 5,
+        "deceitfulness": 5
+      },
+      "overallStrategySummary": "Analysis pending.",
+      "behavioralConsistency": "consistent"
+    }
+  ]
+}

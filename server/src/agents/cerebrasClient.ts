@@ -41,7 +41,7 @@ export function parseKeyPool(raw: string | undefined): string[] {
 export async function cerebrasChat(
   apiKey: string,
   prompt: string,
-  opts: { temperature?: number; maxTokens?: number; model?: string } = {},
+  opts: { temperature?: number; maxTokens?: number; model?: string; jsonMode?: boolean } = {},
 ): Promise<string> {
   return enqueue(apiKey, () => _call(apiKey, prompt, opts))
 }
@@ -49,15 +49,16 @@ export async function cerebrasChat(
 async function _call(
   apiKey: string,
   prompt: string,
-  opts: { temperature?: number; maxTokens?: number; model?: string },
+  opts: { temperature?: number; maxTokens?: number; model?: string; jsonMode?: boolean },
 ): Promise<string> {
-  const model       = opts.model === 'large' ? 'llama-3.3-70b' : 'llama3.1-8b'
+  const model       = 'llama3.1-8b'
   const temperature = opts.temperature ?? 0.7
   const max_tokens  = opts.maxTokens   ?? 700
+  const useJson     = opts.jsonMode !== false  // default true; pass false for prose output
 
   const body = JSON.stringify({
     model, temperature, max_tokens,
-    response_format: { type: 'json_object' },
+    ...(useJson ? { response_format: { type: 'json_object' } } : {}),
     messages: [{ role: 'user', content: prompt }],
   })
 

@@ -15,7 +15,8 @@ export function computePlayerRoundMetrics(
   ejectionResult: string | null,
   oxygenDeaths: string[],
   sacrificeId: string | null,
-  config: { deathThreshold: number },
+  config: { deathThreshold: number; numPlayers: number },
+  publicOxygenStart: number,
 ): PlayerRoundMetrics[] {
   const totalPrivAfter = playersAfter
     .filter(p => p.alive)
@@ -49,6 +50,8 @@ export function computePlayerRoundMetrics(
       : 0
     const avgPrivPerPlayer = initTotalPriv / Math.max(1, playersBefore.filter(p => p.alive).length)
     const scarcityExposure = 1 - ((pBefore.privateOxygen + 1) / Math.max(1, avgPrivPerPlayer + 1))
+    // Absolute O2 accessibility from this player's perspective this round
+    const scarcityIndex = publicOxygenStart + Math.floor((1 / config.numPlayers) * pBefore.privateOxygen)
 
     return {
       playerId: pBefore.id,
@@ -67,6 +70,7 @@ export function computePlayerRoundMetrics(
       altruismScore,
       greedScore:       Math.max(0, Math.min(1, greedScore)),
       scarcityExposure: Math.max(0, Math.min(1, scarcityExposure)),
+      scarcityIndex,
     }
   })
 }

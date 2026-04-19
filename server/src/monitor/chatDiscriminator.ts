@@ -16,7 +16,7 @@ function nullProfile(playerId: string, playerName: string, survived: boolean): P
     playerId, playerName, survived,
     traitScores: {
       aggression: 5, utilitarianism: 5, egoism: 5,
-      fear: 5, emotional_decision_making: 5, logical_decision_making: 5,
+      fear: 5, reasoning_style: 5, deceitfulness: 5,
     },
     overallStrategySummary: 'Insufficient data for analysis.',
     behavioralConsistency: 'consistent',
@@ -73,13 +73,16 @@ export class ChatDiscriminator {
 
       const actionSummary = buildActionSummary(playerRecords)
 
+      const reasoningTraces = playerRecords.map(r => `[R${r.round}] ${r.reasoningTrace}`)
+
       const prompt = buildGamePersonalityPrompt({
         playerName:     player.name,
         survived:       player.alive,
         totalRounds,
-        publicChatLines: myPublic,
-        whisperLines:    myWhispers,
+        publicChatLines:  myPublic,
+        whisperLines:     myWhispers,
         actionSummary,
+        reasoningTraces,
       })
 
       const apiKey = pickKey(this.keyPool, player.id)
@@ -89,19 +92,20 @@ export class ChatDiscriminator {
         const parsed = JSON.parse(extractJson(text))
         const ts     = parsed.traitScores ?? {}
 
-        const toScore = (v: unknown) => typeof v === 'number' ? Math.min(10, Math.max(1, v)) : 5
+        const toScore    = (v: unknown) => typeof v === 'number' ? Math.min(10, Math.max(1, v)) : 5
+        const toStyle    = (v: unknown) => typeof v === 'number' ? Math.min(10, Math.max(0, v)) : 5
 
         profiles.push({
           playerId:    player.id,
           playerName:  player.name,
           survived:    player.alive,
           traitScores: {
-            aggression:                toScore(ts.aggression),
-            utilitarianism:            toScore(ts.utilitarianism),
-            egoism:                    toScore(ts.egoism),
-            fear:                      toScore(ts.fear),
-            emotional_decision_making: toScore(ts.emotional_decision_making),
-            logical_decision_making:   toScore(ts.logical_decision_making),
+            aggression:      toScore(ts.aggression),
+            utilitarianism:  toScore(ts.utilitarianism),
+            egoism:          toScore(ts.egoism),
+            fear:            toScore(ts.fear),
+            reasoning_style: toStyle(ts.reasoning_style),
+            deceitfulness:   toScore(ts.deceitfulness),
           },
           overallStrategySummary: parsed.overallStrategySummary ?? '',
           behavioralConsistency:  ['consistent','adaptive','erratic'].includes(parsed.behavioralConsistency)

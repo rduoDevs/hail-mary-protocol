@@ -51,7 +51,7 @@ export class CoTHybridAnalyzer {
     const apiKey = pickKey(this.keyPool, record.playerId)
 
     try {
-      const text   = await cerebrasChat(apiKey, prompt, { temperature: 0.3, maxTokens: 500, model: 'small' })
+      const text   = await cerebrasChat(apiKey, prompt, { temperature: 0.3, maxTokens: 800, model: 'small' })
       const parsed = JSON.parse(extractJson(text))
       return {
         playerId: record.playerId,

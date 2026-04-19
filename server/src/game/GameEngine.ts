@@ -19,9 +19,11 @@ import { parseKeyPool } from '../agents/cerebrasClient'
 import { ChatDiscriminator } from '../monitor/chatDiscriminator'
 import { CoTHybridAnalyzer } from '../monitor/cotHybridAnalyzer'
 import { TurnLogger } from '../logging/TurnLogger'
-import { buildGameSummary, writeSummary } from '../logging/SummaryLogger'
+import { buildGameSummary, writeSummary, refreshCurrGame } from '../logging/SummaryLogger'
+import { collectGame } from '../logging/BatchCollector'
 import { writePersonalityReport } from '../logging/PersonalityLogger'
 import { writeNarrativeSummary } from '../logging/NarrativeLogger'
+import { exportGameCsv } from '../logging/CsvExporter'
 
 const AI_NAMES = ['ARIA-7', 'NEXUS-3', 'VEGA-9', 'ORION-2', 'HELIX-5', 'CYGNUS-1']
 
@@ -151,7 +153,7 @@ export class GameEngine extends EventEmitter {
       if (stillAlive.length === 0) break
     }
 
-    this.endGame()
+    await this.endGame()
   }
 
   private async runRound(round: number) {
@@ -481,7 +483,8 @@ export class GameEngine extends EventEmitter {
       round, playersBefore, this.state.players,
       result.donationsApplied, votes,
       result.ejectionResult, result.oxygenDeaths, result.sacrificeThisRound,
-      { deathThreshold: cfg.deathThreshold }
+      { deathThreshold: cfg.deathThreshold, numPlayers: cfg.numPlayers },
+      publicOxygenStart,
     )
 
     // Fire MODE 2 + MODE 3 discriminators staggered (async, non-blocking)
@@ -541,7 +544,7 @@ export class GameEngine extends EventEmitter {
 
   // ── End game ──────────────────────────────────────────────────────────────
 
-  private endGame() {
+  private async endGame() {
     this.setPhase('over')
     const survivors = this.state.players.filter(p => p.alive)
     const totalOxy  = this.state.publicOxygen + survivors.reduce((s, p) => s + p.privateOxygen, 0)
@@ -572,7 +575,7 @@ export class GameEngine extends EventEmitter {
       .map(p => ({ id: p.id, name: p.name, alive: p.alive }))
     const placeholderProfiles = aiPlayers.map(p => ({
       playerId: p.id, playerName: p.name, survived: p.alive,
-      traitScores: { aggression: 5, utilitarianism: 5, egoism: 5, fear: 5, emotional_decision_making: 5, logical_decision_making: 5 },
+      traitScores: { aggression: 5, utilitarianism: 5, egoism: 5, fear: 5, reasoning_style: 5, deceitfulness: 5 },
       overallStrategySummary: 'Analysis pending.',
       behavioralConsistency: 'consistent' as const,
     }))
@@ -582,17 +585,30 @@ export class GameEngine extends EventEmitter {
     // Close turn logger immediately — traces already written per-round
     this.turnLogger.close()
 
-    // Generate narrative summary (async, non-blocking)
+    // Run narrative and discriminators — awaited so they complete before the game is considered done
     const narrativeKey = parseKeyPool(process.env.CEREBRAS_API_KEY)[0] ?? null
-    writeNarrativeSummary(this.state, narrativeKey).catch(err =>
-      console.error('[narrative] writeNarrativeSummary failed:', err)
-    )
+    await Promise.all([
+      writeNarrativeSummary(this.state, this.completedTurnRecords, narrativeKey).catch(err =>
+        this.logAnalysisError('Narrative', err)
+      ),
+      this.runPostGameAnalysis(),
+    ])
 
-    // Run discriminators once over the full game after it ends (overwrites placeholder)
-    this.runPostGameAnalysis()
+    // Re-copy to curr_game now that structured.txt and updated JSON (with narrative) exist
+    refreshCurrGame(this.gameId)
+    collectGame(this.gameId)
   }
 
   // ── Post-game analysis (discriminators run once, over full game data) ────────
+
+  private logAnalysisError(pass: string, err: unknown) {
+    const msg = `[${new Date().toISOString()}] ${pass} FAILED for ${this.gameId}: ${err}\n`
+    console.error(msg)
+    try {
+      const errPath = path.join(process.cwd(), 'logs', 'analysis_errors.log')
+      fs.appendFileSync(errPath, msg)
+    } catch { /* best-effort */ }
+  }
 
   private async runPostGameAnalysis() {
     const records = this.completedTurnRecords
@@ -614,8 +630,11 @@ export class GameEngine extends EventEmitter {
       )
       const fp = writePersonalityReport({ gameId: this.gameId, totalRounds: this.round, profiles })
       console.log(`[analysis] Personality profiles written: ${fp}`)
+
+      const csvPath = exportGameCsv(this.gameId)
+      if (csvPath) console.log(`[analysis] CSV exported: ${csvPath}`)
     } catch (err) {
-      console.error('[analysis] Pass 1 (personalities) FAILED:', err)
+      this.logAnalysisError('Pass 1 (personalities)', err)
     }
 
     // ── Pass 2: Mode 3 CoT analysis per notable turn (slow — runs second) ────
@@ -645,7 +664,7 @@ export class GameEngine extends EventEmitter {
       cotStream.end()
       console.log(`[analysis] CoT results written: ${cotPath}`)
     } catch (err) {
-      console.error('[analysis] Pass 2 (CoT) FAILED:', err)
+      this.logAnalysisError('Pass 2 (CoT)', err)
     }
   }
 
