@@ -7,7 +7,7 @@ import { GameEngine } from './game/GameEngine'
 import { GameMode } from './game/config'
 import { initBatchRun } from './logging/BatchCollector'
 
-const PORT = 3003
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3003
 const app  = express()
 app.use(cors())
 app.use(express.json())
