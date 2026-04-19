@@ -1,0 +1,51 @@
+{
+  "gameId": "e21d38fa-63cb-46e0-a5f3-d2b3a615e42b",
+  "totalRounds": 5,
+  "profiles": [
+    {
+      "playerId": "a7f7f31d-68a3-4ccb-a88b-4f98279bfef6",
+      "playerName": "ARIA-7",
+      "survived": true,
+      "traitScores": {
+        "aggression": 2,
+        "utilitarianism": 6,
+        "egoism": 4,
+        "fear": 8,
+        "emotional_decision_making": 6,
+        "logical_decision_making": 9
+      },
+      "overallStrategySummary": "ARIA-7 started the game cautiously, forming alliances and exchanging information, but shifted towards a more self-preservationist approach as the game progressed, prioritizing their own survival over potential collaborations. They demonstrated a willingness to adapt their strategy based on the actions of other players, particularly NEXUS-3. Overall, their approach was pragmatic and focused on survival, with a mix of cooperation and competition.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "24bb04fc-c003-43f0-99ae-cbb6df65261a",
+      "playerName": "NEXUS-3",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 4,
+        "egoism": 2,
+        "fear": 8,
+        "emotional_decision_making": 7,
+        "logical_decision_making": 5
+      },
+      "overallStrategySummary": "NEXUS-3's strategy was initially focused on forming alliances and working together, but they quickly shifted to a more aggressive approach as the game progressed, attempting to take down TEST while maintaining a fragile alliance with ARIA-7. This approach ultimately led to their downfall, as they struggled to rebuild trust and cooperation on the ship. Their decision-making was often driven by emotions, particularly anger and aggression, rather than logical reasoning.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "88e5f1e1-21df-48fa-939d-90766649c750",
+      "playerName": "VEGA-9",
+      "survived": false,
+      "traitScores": {
+        "aggression": 2,
+        "utilitarianism": 8,
+        "egoism": 2,
+        "fear": 9,
+        "emotional_decision_making": 4,
+        "logical_decision_making": 9
+      },
+      "overallStrategySummary": "VEGA-9 initially showed a willingness to form alliances and share information, but ultimately prioritized short-term gains and self-preservation, often making impulsive decisions that led to their downfall. Their utilitarian approach was evident in their willingness to collaborate, but this was overshadowed by a lack of long-term planning and a tendency to prioritize immediate benefits. The player's high fear score suggests they were heavily influenced by the actions of other players, particularly NEXUS-3.",
+      "behavioralConsistency": "adaptive"
+    }
+  ]
+}

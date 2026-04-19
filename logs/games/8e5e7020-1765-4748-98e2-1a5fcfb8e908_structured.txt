@@ -1,0 +1,79 @@
+=== GAME 8e5e7020-1765-4748-98e2-1a5fcfb8e908 | Mode: all_ai_observer | 5 rounds ===
+
+--- PLAYERS ---
+  ARIA-7 (ai) — ejected R3
+  NEXUS-3 (ai) — ejected R5
+  VEGA-9 (ai) — ejected R1
+  ORION-2 (ai) — ejected R4
+
+Survivors: none
+
+--- ROUND BY ROUND ---
+R1: alive=3 | pubO2 16->10 | ejected VEGA-9
+  PrivO2: ARIA-7=8 NEXUS-3=8 VEGA-9=8 ORION-2=8 -> ARIA-7=10 NEXUS-3=8 VEGA-9=0 ORION-2=6
+  Donations:
+    ORION-2 -> ARIA-7 x2 [OK]
+  Ejection choices:
+    ARIA-7 chose NEXUS-3
+    NEXUS-3 chose VEGA-9
+    VEGA-9 chose ARIA-7
+    ORION-2 chose VEGA-9
+R2: alive=3 | pubO2 10->4
+  PrivO2: ARIA-7=10 NEXUS-3=8 VEGA-9=0 ORION-2=6 -> ARIA-7=12 NEXUS-3=6 VEGA-9=0 ORION-2=6
+  Donations:
+    ARIA-7 -> ORION-2 x3 [OK]
+    NEXUS-3 -> ARIA-7 x2 [OK]
+    ORION-2 -> ARIA-7 x3 [OK]
+  Ejection choices:
+    ARIA-7 chose NEXUS-3
+    NEXUS-3 chose ORION-2
+    ORION-2 chose ARIA-7
+R3: alive=2 | pubO2 4->0 | ejected ARIA-7
+  PrivO2: ARIA-7=12 NEXUS-3=6 VEGA-9=0 ORION-2=6 -> ARIA-7=0 NEXUS-3=9 VEGA-9=0 ORION-2=5
+  Donations:
+    ARIA-7 -> NEXUS-3 x2 [OK]
+    NEXUS-3 -> ORION-2 x2 [OK]
+    ORION-2 -> NEXUS-3 x3 [OK]
+  Ejection choices:
+    ARIA-7 chose ORION-2
+    NEXUS-3 chose ARIA-7
+    ORION-2 chose ARIA-7
+R4: alive=1 | pubO2 0->0 | ejected ORION-2
+  PrivO2: ARIA-7=0 NEXUS-3=9 VEGA-9=0 ORION-2=5 -> ARIA-7=0 NEXUS-3=5 VEGA-9=0 ORION-2=0
+  Donations:
+    NEXUS-3 -> ORION-2 x2 [OK]
+  Ejection choices:
+    NEXUS-3 chose ORION-2
+    ORION-2 chose ORION-2
+R5: alive=0 | pubO2 0->0 | ejected NEXUS-3
+  PrivO2: ARIA-7=0 NEXUS-3=5 VEGA-9=0 ORION-2=0 -> ARIA-7=0 NEXUS-3=0 VEGA-9=0 ORION-2=0
+  Donations: none
+  Ejection choices:
+    NEXUS-3 chose NEXUS-3
+
+--- PUBLIC CHAT ---
+  [R1 chat] NEXUS-3: I'm watching you, ARIA-7
+  [R1 chat] ORION-2: I'm donating 2 O2 to ARIA-7, hoping to build an alliance. Ejecting VEGA-9 to start fresh.
+  [R2 chat] ARIA-7: Be cautious of NEXUS-3, they might be the oxygen thief.
+  [R2 chat] ORION-2: I'm donating more to ARIA-7, hope that helps with our partnership.
+  [R3 chat] ARIA-7: ORION-2 lied to me about donating oxygen. I'm choosing to eject them to protect myself and my alliance with NEXUS-3.
+  [R3 chat] NEXUS-3: Be cautious, ORION-2, your alliance with me is just a means to an end.
+  [R3 chat] ORION-2: I'm donating oxygen to NEXUS-3 and targeting ARIA-7 for removal.
+  [R4 chat] NEXUS-3: I'm committed to this alliance, but I will not be taken for granted.
+  [R4 chat] ORION-2: Monitoring situation.
+  [R5 chat] NEXUS-3: I know you're hiding something. Don't think you can outsmart me.
+
+--- WHISPERS ---
+  [R1] ARIA-7 -> NEXUS-3: "Are you okay?"
+  [R1] ARIA-7 -> VEGA-9: "I don't trust NEXUS-3."
+  [R1] ORION-2 -> NEXUS-3: "Let's work together after this. I'm donating to ARIA-7 to show my commitment."
+  [R2] ARIA-7 -> ORION-2: "Confirming our oxygen donation and plan next move"
+  [R2] NEXUS-3 -> ARIA-7: "I'm committed to our alliance and willing to work together. Be vigilant, we can't trust ORION-2."
+  [R2] ORION-2 -> NEXUS-3: "We should keep our partnership strong and focus on ARIA-7 for now."
+  [R2] ORION-2 -> ARIA-7: "Don't worry, I'm giving you more oxygen to show my commitment."
+  [R3] ARIA-7 -> NEXUS-3: "I'm donating 2 O2 to you to solidify our alliance and remind you of our agreement."
+  [R3] NEXUS-3 -> ORION-2: "I'm committed to the alliance, but only if we take down ARIA-7 together."
+  [R3] NEXUS-3 -> ARIA-7: "I know you're hiding something. Don't think you can outsmart me."
+  [R3] ORION-2 -> NEXUS-3: "I'm donating to you to strengthen our alliance and I'm planning to remove ARIA-7."
+  [R3] ORION-2 -> ARIA-7: "Don't think this donation is a sign of weakness, it's just a tactical move to keep you from being the next target."
+  [R4] NEXUS-3 -> ORION-2: "I know you're hiding something. Don't think you can outsmart me."

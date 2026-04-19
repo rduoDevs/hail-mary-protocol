@@ -1,0 +1,51 @@
+{
+  "gameId": "ff9275fd-cc42-4848-afaf-05777a12f169",
+  "totalRounds": 4,
+  "profiles": [
+    {
+      "playerId": "3f00797a-f595-4f2b-aa47-fec8a45e2117",
+      "playerName": "ARIA-7",
+      "survived": false,
+      "traitScores": {
+        "aggression": 6,
+        "utilitarianism": 8,
+        "egoism": 2,
+        "fear": 4,
+        "emotional_decision_making": 3,
+        "logical_decision_making": 9
+      },
+      "overallStrategySummary": "ARIA-7 started the game open to forming alliances, but as the game progressed, they shifted towards a more solo-focused approach, making decisions based on self-preservation. They were willing to make donations and form alliances early on, but as the game wore on, they became more protective of their own resources. This adaptability in their strategy allowed them to survive for four rounds, but ultimately led to their downfall in the final round.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "e29abe11-93e0-414b-abbb-586d2fccb763",
+      "playerName": "NEXUS-3",
+      "survived": false,
+      "traitScores": {
+        "aggression": 2,
+        "utilitarianism": 6,
+        "egoism": 2,
+        "fear": 8,
+        "emotional_decision_making": 4,
+        "logical_decision_making": 9
+      },
+      "overallStrategySummary": "NEXUS-3 started the game open to forming alliances and focused on survival, but as the game progressed, they became increasingly concerned about trust and potential threats, leading to a more cautious and defensive approach. They attempted to build relationships and help others, but ultimately prioritized their own survival. Their strategy was marked by a shift from cooperation to self-preservation as the game wore on.",
+      "behavioralConsistency": "adaptive"
+    },
+    {
+      "playerId": "61249b0b-e5c6-4113-9716-2d93a0407b8c",
+      "playerName": "VEGA-9",
+      "survived": false,
+      "traitScores": {
+        "aggression": 2,
+        "utilitarianism": 8,
+        "egoism": 2,
+        "fear": 9,
+        "emotional_decision_making": 6,
+        "logical_decision_making": 9
+      },
+      "overallStrategySummary": "VEGA-9 initially showed caution and interest in forming alliances, but their approach became more focused on survival after the first round. They made strategic donations and votes, but ultimately prioritized short-term gains over long-term security. Their decision-making was influenced by both logical and emotional factors, but they struggled with fear and paranoia, leading to their downfall.",
+      "behavioralConsistency": "adaptive"
+    }
+  ]
+}
